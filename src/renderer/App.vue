@@ -5,11 +5,15 @@
 </template>
 
 <script>
-  export default {
-    name: 'oxyrest'
-  };
+export default {
+  name: "oxyrest"
+};
 </script>
 
-<style>
-/* CSS */
+<style lang="scss" scoped>
+#app {
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+}
 </style>

@@ -1,4 +1,4 @@
-import { loadProducts } from "../backendish/Src/Product";
+import { loadProducts, createProduct, inStock, outStock } from "../backendish/Src/Product";
 import { products as types } from "../vuexTypes";
 
 export default {
@@ -6,7 +6,8 @@ export default {
     data: [],
     inputs: {},
     loading: false,
-    showSpinner: false
+    showSpinner: false,
+    buttonRoute: 1,
   },
   actions: {
     async [types.load]({ commit }) {
@@ -19,31 +20,35 @@ export default {
       commit(types.stopLoading);
       commit(types.hideSpinner);
     },
-    async [types.inStock]({ commit, state }) {
+    async [types.create]({ commit }, product) {
       commit(types.startLoading);
       setTimeout(() => {
         commit(types.showSpinner);
       }, 200);
-      await inStock(state.inputs);
-      commit(types.load, await LOAD_PRODUCTS());
+      await createProduct(product);
+      commit(types.load, await loadProducts());
       commit(types.stopLoading);
       commit(types.hideSpinner);
     },
-    async [types.outStock]({ commit, state }, type) {
+    async [types.inStock]({ commit }, amount) {
       commit(types.startLoading);
       setTimeout(() => {
         commit(types.showSpinner);
       }, 200);
-      await outStock(state.inputs, type);
-      commit(types.load, await LOAD_PRODUCTS());
+      await inStock(amount);
+      commit(types.load, await loadProducts());
       commit(types.stopLoading);
       commit(types.hideSpinner);
     },
-    [types.setInput]({ commit }, data) {
-      commit(types.setInput, data);
-    },
-    [types.clearInputs]({ commit }, data) {
-      commit(types.clearInputs);
+    async [types.outStock]({ commit }, amount) {
+      commit(types.startLoading);
+      setTimeout(() => {
+        commit(types.showSpinner);
+      }, 200);
+      await outStock(amount);
+      commit(types.load, await loadProducts());
+      commit(types.stopLoading);
+      commit(types.hideSpinner);
     },
     [types.startRealTime]({ commit }) {
       startRealTimeProducts(async () => {
@@ -51,14 +56,17 @@ export default {
         setTimeout(() => {
           commit(types.showSpinner);
         }, 200);
-        commit(types.load, await LOAD_PRODUCTS());
+        commit(types.load, await loadProducts());
         commit(types.stopLoading);
         commit(types.hideSpinner);
       });
     },
     [types.stopRealTime]() {
       stopRealTimeProducts();
-    }
+    },
+    [types.buttons]({ commit }, route) {
+      commit(types.buttons, route);
+    },
   },
   mutations: {
     [types.load](state, payload) {
@@ -78,11 +86,8 @@ export default {
     [types.hideSpinner](state) {
       state.showSpinner = false;
     },
-    [types.setInput](state, { index, value } = data) {
-      state.inputs[index] = value;
-    },
-    [types.clearInputs](state) {
-      state.inputs = {};
+    [types.buttons](state, route) {
+      state.buttonRoute = route;
     }
   }
 };

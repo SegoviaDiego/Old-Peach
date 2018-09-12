@@ -14,9 +14,9 @@ export function loadProducts() {
   });
 }
 
-export function createProduct(product) {
+export function createProduct(p) {
   return new Promise((resolve, reject) => {
-    db.insert(product, err => {
+    db.insert(p, err => {
       if (err) {
         reject({
           error: err,
@@ -25,7 +25,7 @@ export function createProduct(product) {
         });
         throw err;
       }
-      resolve();
+      resolve(true);
     });
   });
 }
@@ -62,10 +62,11 @@ export function deleteProduct(_id) {
   });
 }
 
-export async function addStock(products) {
+export async function inStock(amount) {
   return new Promise(async resolve => {
-    for (let { id, amount } in products) {
-      await add(id, amount);
+    let keys = Object.keys(amount);
+    for (let id of keys) {
+      await add(id, amount[id]);
     }
     resolve();
   });
@@ -73,16 +74,17 @@ export async function addStock(products) {
 
 function add(_id, amount) {
   return new Promise(resolve => {
-    db.update({ _id }, { $inc: { stock: amount } }, {}, err => {
+    db.update({ _id }, { $inc: { stock: parseFloat(amount) } }, {}, err => {
       resolve();
     });
   });
 }
 
-export async function removeStock(products) {
+export async function outStock(amount) {
   return new Promise(async resolve => {
-    for (let { id, amount } in products) {
-      await remove(id, amount);
+    let keys = Object.keys(amount);
+    for (let id of keys) {
+      await remove(id, amount[id]);
     }
     resolve();
   });

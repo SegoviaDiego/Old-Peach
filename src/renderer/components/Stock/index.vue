@@ -1,7 +1,11 @@
 <template>
   <div class="mainGrid">
-    <HeaderBar />
-    <Table />
+    <HeaderBar
+      :amount="amount" :selected="selected"
+      :newItem="newItem" :routes="buttonRoutes" />
+    <Table
+      :amount="amount" :selected="selected"
+      :newItem="newItem" :routes="buttonRoutes" />
   </div>
 </template>
 
@@ -20,6 +24,25 @@ export default {
   created() {
     this.$store.dispatch(types.load);
   },
+  data: () => ({
+    newItem: {
+      _id: undefined,
+      name: null,
+      price: null,
+      stock: 0
+    },
+    amount: {},
+    selected: {},
+    buttonRoutes: {
+      default: 1,
+      more: 2,
+      createItem: 3,
+      deleteItems: 4,
+      editItems: 5,
+      inStock: 6,
+      outStock: 7
+    }
+  }),
   computed: mapState({
     data: state => state.Products.data,
     isLoading: state => state.Products.loading,
@@ -40,48 +63,6 @@ export default {
   grid-template-areas:
     "header"
     "table";
-  overflow: hidden;
-}
-.header {
-  grid-area: header;
-  display: grid;
-  grid-template-rows: 71px;
-  grid-template-columns: 1fr 1fr;
-  grid-template-areas: "searchbar buttons";
-  .searchbar {
-    position: relative;
-    grid-area: searchbar;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    background-color: #e1e2e1;
-    padding: 0px 41px;
-    .input {
-      flex: 8;
-    }
-    .icon {
-      flex: 2;
-    }
-    .yellowRectangle {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      z-index: -1;
-      background-color: #fdd835;
-      border-bottom-left-radius: 60px;
-      border-top-right-radius: 60px;
-    }
-  }
-  .buttons {
-    background-color: red;
-    grid-area: buttons;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-  }
+  overflow: scroll;
 }
 </style>

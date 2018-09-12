@@ -1,5 +1,6 @@
 export const products = {
   // actions
+  buttons: 'NAVIGATE_BUTTONS',
   create: 'CREATE_PRODUCT',
   delete: 'DELETE_PRODUCT',
   modify: 'MODIFY_PRODUCT',
@@ -15,6 +16,4 @@ export const products = {
   stopLoading: 'STOP_LOADING',
   showSpinner: 'SHOW_SPINNER',
   hideSpinner: 'HIDE_SPINNER',
-  setInput: 'SET_INPUT',
-  clearInputs: 'CLEAR_INPUTS'
 }

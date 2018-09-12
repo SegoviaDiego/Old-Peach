@@ -59,6 +59,9 @@ export default {
 }
 .dots {
   grid-area: dots;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   .dot {
     font-size: 64px;
     font-weight: bold;

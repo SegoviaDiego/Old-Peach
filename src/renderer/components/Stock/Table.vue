@@ -15,25 +15,55 @@
       </div>
     </div>
     <div class="body">
-      
-      <div
-        v-for="n in 30"
-        :key="n"
-        class="row">
+      <div v-if="route === routes.creatingItems" class="row">
         <div class="column">
-          {{n}}
+          <input placeholder="Codigo" type="text" v-model.lazy="newItem._id">
         </div>
         <div class="column">
-          Pan
+          <input placeholder="Nombre" type="text" v-model.lazy="newItem.name">
         </div>
         <div class="column">
-          20$
+          <input placeholder="Precio" type="number" min="0" v-model.lazy="newItem.price">
         </div>
         <div class="column">
-          500kg
         </div>
       </div>
-      
+      <div
+      v-for="item in products"
+      :key="item._id"
+      class="row">
+        <div class="column">
+            <!-- {{item._id}} -->
+        </div>
+        <div class="column">
+          <template v-if="route === routes.editingItems">
+            <input :placeholder="item.price" type="number" min="0" v-model.lazy="amount[item._id]">
+          </template>
+          <template v-else>
+            {{item.name}}
+          </template>
+        </div>
+        <div class="column">
+          <template v-if="route === routes.editingItems">
+            <input :placeholder="item.price" type="number" min="0" v-model.lazy="amount[item._id]">
+          </template>
+          <template v-else>
+            {{item.price}}$
+          </template>
+        </div>
+        <div class="column">
+          <template v-if="route === routes.inStock || route === routes.outStock">
+            <input :placeholder="item.stock + ' en stock'" type="number" min="0" v-model.lazy="amount[item._id]">
+          </template>
+          <template v-else-if="route === routes.deleteItem">
+            {{item.stock}}
+            <input type="checkbox" v-model.lazy="selected[item._id]">
+          </template>
+          <template v-else>
+            {{item.stock}}
+          </template>
+        </div>
+      </div>
     </div>
     <div class="background">
       <div class="header"/>
@@ -48,12 +78,31 @@
 </template>
 
 <script>
+import { mapState } from "Vuex";
+import { products as types } from "../../store/vuexTypes";
+
 export default {
-  name: "products-table"
+  name: "products-table",
+  props: {
+    newItem: {},
+    amount: {},
+    selected: {},
+    routes: {}
+  },
+  created() {
+    this.$store.dispatch(types.load);
+  },
+  computed: mapState({
+    products: state => state.Products.data,
+    isLoading: state => state.Products.loading,
+    showSpinner: state => state.Products.showSpinner,
+    route: state => state.Products.buttonRoute
+  })
 };
 </script>
 
 <style lang="scss" scoped>
+$scrollbarSize: 16px;
 .table {
   position: relative;
   grid-area: table;
@@ -62,8 +111,10 @@ export default {
   display: grid;
   grid-template-rows: 1fr 9fr;
   grid-template-columns: 1fr;
-
+  grid-template-areas: "header" "body";
+  min-height: 0;
   .header {
+    padding-right: $scrollbarSize;
     grid-area: header;
     z-index: 2;
     display: grid;
@@ -77,26 +128,70 @@ export default {
       font-size: 28px;
       font-family: Lato;
       font-weight: bold;
+      overflow: hidden;
     }
   }
   .body {
     grid-area: body;
     z-index: 2;
+    overflow-x: hidden;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: $scrollbarSize;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: #e1e2e1;
+    }
+    &::-webkit-scrollbar-thumb {
+      $borderSize: 7px;
+      background-color: #fdd835;
+      border-top: $borderSize solid black;
+      border-bottom: $borderSize solid black;
+    }
     .row {
-      $h: 30px;
+      $h: 40px;
+      $fs: 25px;
       height: $h;
       display: grid;
       grid-template-rows: 1fr;
       grid-template-columns: 1fr 1fr 1fr 3fr;
       .column {
+        overflow: hidden;
         display: flex;
-        flex-grow: 1;
-        padding-left: 10px;
+        padding: 0 $scrollbarSize;
         align-items: center;
         color: $fontColor;
-        font-size: $h - 5px;
+        font-size: $fs;
         font-family: Lato;
         font-weight: bold;
+        input {
+          & {
+            width: 100%;
+            flex: 1;
+            color: #000;
+            border: none;
+            border-bottom: 2px solid #ff8a50;
+            text-decoration: none;
+            outline: none;
+            background-color: transparent;
+            font-family: Lato;
+            font-weight: bold;
+            font-size: $fs - 5px;
+            transition: 0.2s ease;
+            &:focus {
+              border-bottom: 4px solid #ff8a50;
+            }
+          }
+          &[type="checkbox"] {
+            $size: 25px;
+            border-radius: 50px;
+            height: $size;
+            width: $size;
+            color: #000;
+            background-color: #c4c4c4;
+            cursor: pointer;
+          }
+        }
       }
     }
   }
@@ -115,6 +210,7 @@ export default {
       background-color: #e1e2e1;
     }
     .body {
+      margin-right: $scrollbarSize;
       flex: 9;
       display: flex;
       flex-direction: row;

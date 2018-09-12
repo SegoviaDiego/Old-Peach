@@ -7,7 +7,19 @@ import "vue-material/dist/theme/default.css";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faBoxOpen, faSignature, faCalendarCheck, faEllipsisH, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBoxOpen,
+  faSignature,
+  faCalendarCheck,
+  faEllipsisH,
+  faTrashAlt,
+  faPen,
+  faPlus,
+  faChevronLeft,
+  faTimes,
+  faSave,
+  faSearch
+} from "@fortawesome/free-solid-svg-icons";
 
 import "material-design-icons/iconfont/material-icons.css";
 import "typeface-roboto/index.css";
@@ -16,7 +28,19 @@ import "typeface-roboto/index.css";
 Vue.use(VueMaterial);
 
 //Font awesome
-library.add(faBoxOpen, faSignature, faCalendarCheck, faEllipsisH, faTrashAlt);
+library.add(
+  faBoxOpen,
+  faSignature,
+  faCalendarCheck,
+  faEllipsisH,
+  faTrashAlt,
+  faPen,
+  faPlus,
+  faChevronLeft,
+  faTimes,
+  faSave,
+  faSearch
+);
 Vue.component("fontawesome", FontAwesomeIcon);
 
 import App from "./App";
