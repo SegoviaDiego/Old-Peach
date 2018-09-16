@@ -6,6 +6,12 @@ export const products = new Datastore({
   autoload: true,
   filename: path.join(remote.app.getPath("userData"), "/products.db")
 });
+
+export const settings = new Datastore({
+  autoload: true,
+  filename: path.join(remote.app.getPath("userData"), "/settings.db")
+});
+
 // import { init, sync } from "./Server/Sequelize";
 // import { listenForChanges, identifyChange } from "./Server/Firebird";
 // import { SYNC_TO_SYSTEL } from "./Src/Product";

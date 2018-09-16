@@ -1,4 +1,10 @@
-import { loadProducts, createProduct, inStock, outStock } from "../backendish/Src/Product";
+import {
+  loadProducts,
+  createProduct,
+  deleteItems,
+  inStock,
+  outStock
+} from "../backendish/Src/Product";
 import { products as types } from "../vuexTypes";
 
 export default {
@@ -8,6 +14,7 @@ export default {
     loading: false,
     showSpinner: false,
     buttonRoute: 1,
+    selected: {}
   },
   actions: {
     async [types.load]({ commit }) {
@@ -26,6 +33,16 @@ export default {
         commit(types.showSpinner);
       }, 200);
       await createProduct(product);
+      commit(types.load, await loadProducts());
+      commit(types.stopLoading);
+      commit(types.hideSpinner);
+    },
+    async [types.delete]({ commit }, selected) {
+      commit(types.startLoading);
+      setTimeout(() => {
+        commit(types.showSpinner);
+      }, 200);
+      await deleteItems(selected);
       commit(types.load, await loadProducts());
       commit(types.stopLoading);
       commit(types.hideSpinner);
@@ -66,7 +83,7 @@ export default {
     },
     [types.buttons]({ commit }, route) {
       commit(types.buttons, route);
-    },
+    }
   },
   mutations: {
     [types.load](state, payload) {

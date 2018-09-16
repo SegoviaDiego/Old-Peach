@@ -16,17 +16,23 @@ export function loadProducts() {
 
 export function createProduct(p) {
   return new Promise((resolve, reject) => {
-    db.insert(p, err => {
-      if (err) {
-        reject({
-          error: err,
-          code: 2,
-          message: "Ha ocurrido un error inesperado."
-        });
-        throw err;
+    db.insert(
+      {
+        ...p,
+        price: parseFloat(parseFloat(p.price).toFixed(2))
+      },
+      err => {
+        if (err) {
+          reject({
+            error: err,
+            code: 2,
+            message: "Ha ocurrido un error inesperado."
+          });
+          throw err;
+        }
+        resolve(true);
       }
-      resolve(true);
-    });
+    );
   });
 }
 
@@ -46,7 +52,17 @@ export function modifyProduct(_id, modifiedProduct) {
   });
 }
 
-export function deleteProduct(_id) {
+export function deleteItems(selected) {
+  return new Promise(async resolve => {
+    let keys = Object.keys(selected);
+    for (let id of keys) {
+      if (selected[id]) await deleteProduct(id);
+    }
+    resolve();
+  });
+}
+
+function deleteProduct(_id) {
   return new Promise((resolve, reject) => {
     db.remove({ _id }, {}, err => {
       if (err) {

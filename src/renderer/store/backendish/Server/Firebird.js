@@ -8,7 +8,8 @@ let changesToIgnore = 0;
 const options = {
   host: "127.0.0.1",
   port: 3050,
-  database: "C:/Users/YoPC/Desktop/Nueva carpeta/qendra.fdb",
+  database: 'C:/projects/qendra.fdb',
+  // database: "C:/Users/YoPC/Desktop/Nueva carpeta/qendra.fdb",
   // database: 'C:/Users/Silvina/AppData/Local/VirtualStore/Program Files (x86)/SYSTEL/qendra.fdb',
   user: "SYSDBA",
   password: "masterkey"
@@ -19,9 +20,6 @@ export function listenForChanges() {
   fs.watch(options.database, () => {
     if (changesToIgnore == 0) {
       identifyChange();
-      setTimeout(() => {
-        SocketManager.ping();
-      }, 1000);
     } else {
       changesToIgnore--;
     }

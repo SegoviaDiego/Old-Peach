@@ -14,16 +14,25 @@
       <template v-if="route === routes.default">
         <button @click="goTo(routes.inStock)" class="rounded">
           Ingreso
+          <md-tooltip md-direction="top">
+            Ingreso
+          </md-tooltip>
         </button>
         <button @click="goTo(routes.outStock)" class="rounded">
           Egreso
+          <md-tooltip md-direction="top">
+            Egreso
+          </md-tooltip>
         </button>
-        <button class="circle gray">
+        <button @click="print()" class="circle gray">
           <md-icon>print</md-icon>
+          <md-tooltip md-direction="top">
+            Imprimir
+          </md-tooltip>
         </button>
-        <button @click="goTo(routes.more)" class="circle">
+        <!-- <button @click="goTo(routes.more)" class="circle">
           <fontawesome icon="ellipsis-h" />
-        </button>
+        </button> -->
       </template>
       <template v-else-if="route === routes.more">
         <button @click="goTo(routes.default)" class="circle">
@@ -66,18 +75,39 @@
       <template v-else-if="route === routes.inStock">
         <button @click="goTo(routes.default, routes.inStock)" class="circle">
           <fontawesome icon="times" />
+          <md-tooltip md-direction="top">
+            Cancelar
+          </md-tooltip>
         </button>
         <button @click="saveInStock()" class="circle">
           <fontawesome icon="save" />
+          <md-tooltip md-direction="top">
+            Guardar cambios
+          </md-tooltip>
         </button>
       </template>
       <template v-else-if="route === routes.outStock">
         <button @click="goTo(routes.default, routes.outStock)" class="circle">
           <fontawesome icon="times" />
+          <md-tooltip md-direction="top">
+            Cancelar
+          </md-tooltip>
         </button>
         <button @click="saveOutStock()" class="circle">
           <fontawesome icon="save" />
+          <md-tooltip md-direction="top">
+            Guardar cambios
+          </md-tooltip>
         </button>
+        <div class="select">
+          <md-field>
+            <md-select placeholder="Tipo de Egreso">
+              <md-option value="1">Transferencia</md-option>
+              <md-option value="2">Reciclado</md-option>
+              <md-option value="3">Baja</md-option>
+            </md-select>
+          </md-field>
+        </div>
       </template> 
     </div>
   </div>
@@ -93,6 +123,7 @@ export default {
     newItem: {},
     amount: {},
     selected: {},
+    changes: {},
     routes: {}
   },
   computed: mapState({
@@ -101,23 +132,11 @@ export default {
     route: state => state.Products.buttonRoute
   }),
   methods: {
+    print() {
+      this.$emit("print");
+    },
     goTo(route, from) {
-      this.$store.dispatch(types.buttons, route);
-      if (from)
-        switch (from) {
-          case this.routes.createItem:
-            break;
-          case this.routes.editItems:
-            break;
-          case this.routes.deleteItems:
-            this.selected = {};
-
-            break;
-          case this.routes.inStock:
-          case this.routes.outStock:
-            this.amount = {};
-            break;
-        }
+      this.$emit("go-to", route, from);
     },
     saveInStock() {
       this.$store.dispatch(types.inStock, this.amount);
@@ -137,11 +156,15 @@ export default {
         return;
       }
       this.$store.dispatch(types.create, this.newItem);
+      this.goTo(this.routes.default, this.routes.createItem);
     },
     saveChanges() {
       // this.amount = [];
     },
-    saveDeletes() {}
+    saveDeletes() {
+      this.$store.dispatch(types.delete, this.selected);
+      this.goTo(this.routes.default, this.routes.deleteItems);
+    }
   }
 };
 </script>
@@ -193,6 +216,9 @@ export default {
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    button {
+      margin-left: 5px;
+    }
     .rounded {
       background-color: #fdd835;
       height: 55px;
@@ -220,6 +246,9 @@ export default {
       border-radius: 50%;
       cursor: pointer;
       font-size: 24px;
+    }
+    .select {
+      margin-left: 10px;
     }
   }
 }

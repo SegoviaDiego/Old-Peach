@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="body">
-      <div v-if="route === routes.creatingItems" class="row">
+      <div v-if="route === routes.createItem" class="row">
         <div class="column">
           <input placeholder="Codigo" type="text" v-model.lazy="newItem._id">
         </div>
@@ -36,28 +36,37 @@
             <!-- {{item._id}} -->
         </div>
         <div class="column">
-          <template v-if="route === routes.editingItems">
-            <input :placeholder="item.price" type="number" min="0" v-model.lazy="amount[item._id]">
+          <template v-if="route === routes.editItems">
+            <input
+              :value="changes[item._id]['name']"
+              @change="editValue(item._id, 'name' , $event.target.value)"
+              :placeholder="item.name" type="text">
           </template>
           <template v-else>
             {{item.name}}
           </template>
         </div>
         <div class="column">
-          <template v-if="route === routes.editingItems">
-            <input :placeholder="item.price" type="number" min="0" v-model.lazy="amount[item._id]">
+          <template v-if="route === routes.editItems">
+            <input
+              :value="changes[item._id]['price']"
+              @change="editValue(item._id, 'price' , $event.target.value)"
+              :placeholder="item.price" type="number" min="0">
           </template>
           <template v-else>
-            {{item.price}}$
+            {{item.price}}
           </template>
         </div>
         <div class="column">
           <template v-if="route === routes.inStock || route === routes.outStock">
-            <input :placeholder="item.stock + ' en stock'" type="number" min="0" v-model.lazy="amount[item._id]">
+            <input
+            :value="amount[item._id]"
+            @change="inputStock(item._id, $event.target.value)"
+            :placeholder="item.stock + ' en stock'" type="number" min="0">
           </template>
-          <template v-else-if="route === routes.deleteItem">
+          <template v-else-if="route === routes.deleteItems">
             {{item.stock}}
-            <input type="checkbox" v-model.lazy="selected[item._id]">
+            <input type="checkbox" :value="selected[item._id]">
           </template>
           <template v-else>
             {{item.stock}}
@@ -87,17 +96,23 @@ export default {
     newItem: {},
     amount: {},
     selected: {},
+    changes: {},
     routes: {}
-  },
-  created() {
-    this.$store.dispatch(types.load);
   },
   computed: mapState({
     products: state => state.Products.data,
     isLoading: state => state.Products.loading,
     showSpinner: state => state.Products.showSpinner,
     route: state => state.Products.buttonRoute
-  })
+  }),
+  methods: {
+    inputStock(_id, amount) {
+      this.$emit("input-stock", _id, amount);
+    },
+    editValue(_id, att, value) {
+      this.$emit("edit-item-value", _id, att, value);
+    },
+  }
 };
 </script>
 
