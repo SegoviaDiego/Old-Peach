@@ -1,5 +1,6 @@
 export const products = {
   // actions
+  filter: 'FILTER_CHANGE',
   buttons: 'NAVIGATE_BUTTONS',
   create: 'CREATE_PRODUCT',
   delete: 'DELETE_PRODUCT',

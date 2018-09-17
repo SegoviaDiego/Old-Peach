@@ -33,7 +33,7 @@
       :key="item._id"
       class="row">
         <div class="column">
-            <!-- {{item._id}} -->
+            {{item._id}}
         </div>
         <div class="column">
           <template v-if="route === routes.editItems">
@@ -66,7 +66,8 @@
           </template>
           <template v-else-if="route === routes.deleteItems">
             {{item.stock}}
-            <input type="checkbox" :value="selected[item._id]">
+            <input type="checkbox" 
+            v-model="selected[item._id]">
           </template>
           <template v-else>
             {{item.stock}}
@@ -93,6 +94,7 @@ import { products as types } from "../../store/vuexTypes";
 export default {
   name: "products-table",
   props: {
+    products: Array,
     newItem: {},
     amount: {},
     selected: {},
@@ -100,7 +102,6 @@ export default {
     routes: {}
   },
   computed: mapState({
-    products: state => state.Products.data,
     isLoading: state => state.Products.loading,
     showSpinner: state => state.Products.showSpinner,
     route: state => state.Products.buttonRoute
@@ -111,7 +112,7 @@ export default {
     },
     editValue(_id, att, value) {
       this.$emit("edit-item-value", _id, att, value);
-    },
+    }
   }
 };
 </script>
@@ -134,7 +135,7 @@ $scrollbarSize: 16px;
     z-index: 2;
     display: grid;
     grid-template-rows: 1fr;
-    grid-template-columns: 1fr 1fr 1fr 3fr;
+    grid-template-columns: 1fr 3fr 1fr 3fr;
     .column {
       display: flex;
       padding-left: 10px;
@@ -164,17 +165,18 @@ $scrollbarSize: 16px;
       border-bottom: $borderSize solid black;
     }
     .row {
+      margin: 10px 0px;
       $h: 40px;
       $fs: 25px;
-      height: $h;
+      min-height: $h;
       display: grid;
       grid-template-rows: 1fr;
-      grid-template-columns: 1fr 1fr 1fr 3fr;
+      grid-template-columns: 1fr 3fr 1fr 3fr;
       .column {
         overflow: hidden;
         display: flex;
         padding: 0 $scrollbarSize;
-        align-items: center;
+        // align-items: center;
         color: $fontColor;
         font-size: $fs;
         font-family: Lato;
@@ -231,6 +233,9 @@ $scrollbarSize: 16px;
       flex-direction: row;
       .column {
         flex: 1;
+      }
+      .column:nth-of-type(2) {
+        flex: 3;
       }
       .column:nth-of-type(4) {
         flex: 3;

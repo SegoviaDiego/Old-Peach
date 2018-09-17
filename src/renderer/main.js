@@ -18,7 +18,9 @@ import {
   faChevronLeft,
   faTimes,
   faSave,
-  faSearch
+  faSearch,
+  faPrint,
+  faCog
 } from "@fortawesome/free-solid-svg-icons";
 
 import "material-design-icons/iconfont/material-icons.css";
@@ -39,8 +41,11 @@ library.add(
   faChevronLeft,
   faTimes,
   faSave,
-  faSearch
+  faSearch,
+  faPrint,
+  faCog
 );
+
 Vue.component("fontawesome", FontAwesomeIcon);
 
 import App from "./App";

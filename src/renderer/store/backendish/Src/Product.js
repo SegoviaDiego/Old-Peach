@@ -1,4 +1,5 @@
 import { products as db } from "../datastore";
+import { getProductList } from "../Server/Firebird";
 
 export function loadProducts() {
   return new Promise((resolve, reject) => {
@@ -11,6 +12,21 @@ export function loadProducts() {
         }
         resolve(docs);
       });
+  });
+}
+
+export function productExists(_id) {
+  return new Promise((resolve, reject) => {
+    db.find(
+      {
+        _id
+      },
+      (err, docs) => {
+        if (err) throw err;
+        if (docs.length > 0) resolve(true);
+        else resolve(false);
+      }
+    );
   });
 }
 
@@ -90,9 +106,14 @@ export async function inStock(amount) {
 
 function add(_id, amount) {
   return new Promise(resolve => {
-    db.update({ _id }, { $inc: { stock: parseFloat(amount) } }, {}, err => {
-      resolve();
-    });
+    db.update(
+      { _id: parseInt(_id) },
+      { $inc: { stock: parseFloat(amount) } },
+      {},
+      err => {
+        resolve();
+      }
+    );
   });
 }
 
@@ -108,26 +129,29 @@ export async function outStock(amount) {
 
 function remove(_id, amount) {
   return new Promise(resolve => {
-    db.update({ _id }, { $inc: { stock: -amount } }, {}, err => {
+    db.update({ _id: parseInt(_id) }, { $inc: { stock: - parseFloat(amount) } }, {}, err => {
       resolve();
     });
   });
 }
 
-// export function SYNC_TO_SYSTEL(callback) {
-//   const Product = con().import("../Models/Product");
-//   let product;
+export function syncToSystel() {
+  return new Promise(resolve => {
+    getProductList().then(async list => {
+      let sysList = await getProductList();
+      let dbList = await loadProducts();
+      let item;
+      for (let index in list) {
+        item = sysList[index];
 
-//   getProductList().then(async p => {
-//     for (let index in p) {
-//       product = await Product.findById(p[index].id);
-//       if (!product) await Product.create({ ...p[index], stock: 0 });
-//       else await product.update({ ...p[index] });
-//     }
-//     callback({
-//       payload: {
-//         success: true
-//       }
-//     });
-//   });
-// }
+        if (!dbList[index]) await createProduct({ ...item, stock: 0 });
+        else
+          await modifyProduct(item._id, {
+            ...item,
+            stock: dbList[index].stock
+          });
+      }
+      resolve();
+    });
+  });
+}

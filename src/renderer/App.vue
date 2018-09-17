@@ -5,8 +5,13 @@
 </template>
 
 <script>
+import { products as types } from "./store/vuexTypes";
+
 export default {
-  name: "oxyrest"
+  name: "oxyrest",
+  created() {
+    this.$store.dispatch(types.syncToSystel);
+  }
 };
 </script>
 

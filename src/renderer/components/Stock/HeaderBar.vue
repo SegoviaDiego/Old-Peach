@@ -3,7 +3,10 @@
     <div class="searchbar">
       <div class="container">
         <div class="input">
-          <input type="text">
+          <input
+              :value="filter"
+              @input="filterChanged($event.target.value)"
+              placeholder="Buscar producto" type="text">
         </div>
         <div class="icon">
           <fontawesome icon="search" />
@@ -25,7 +28,7 @@
           </md-tooltip>
         </button>
         <button @click="print()" class="circle gray">
-          <md-icon>print</md-icon>
+          <fontawesome icon="print" />
           <md-tooltip md-direction="top">
             Imprimir
           </md-tooltip>
@@ -129,9 +132,13 @@ export default {
   computed: mapState({
     isLoading: state => state.Products.loading,
     showSpinner: state => state.Products.showSpinner,
-    route: state => state.Products.buttonRoute
+    route: state => state.Products.buttonRoute,
+    filter: state => state.Products.filter
   }),
   methods: {
+    filterChanged(value) {
+      this.$store.dispatch(types.filter, value);
+    },
     print() {
       this.$emit("print");
     },
@@ -176,8 +183,10 @@ export default {
   grid-template-rows: 1fr;
   grid-template-columns: 1fr 1fr;
   grid-template-areas: "searchbar buttons";
+  padding: 0 2%;
   .searchbar {
-    $radius: 60px;
+    height: 55px;
+    $radius: 30px;
     grid-area: searchbar;
     display: flex;
     background-color: #fdd835;
@@ -195,7 +204,11 @@ export default {
     }
     .input {
       flex: 8;
+      height: 100%;
       input {
+        padding: 0px 10px;
+        font-size: 20px;
+        font-weight: bold;
         width: 100%;
         height: 100%;
         border-color: none;
@@ -207,7 +220,13 @@ export default {
       }
     }
     .icon {
+      display: flex;
+      margin-right: 15px;
+      justify-content: flex-end;
+      align-items: center;
       flex: 2;
+      font-size: 34px;
+      color: #3D3D3D;
     }
   }
   .buttons {
@@ -215,9 +234,13 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     button {
       margin-left: 5px;
+      transition: 300ms;
+      &:hover {
+        color: #FF5722;
+      }
     }
     .rounded {
       background-color: #fdd835;

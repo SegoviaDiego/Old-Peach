@@ -8,7 +8,7 @@ let changesToIgnore = 0;
 const options = {
   host: "127.0.0.1",
   port: 3050,
-  database: 'C:/projects/qendra.fdb',
+  database: "C:/projects/qendra.fdb",
   // database: "C:/Users/YoPC/Desktop/Nueva carpeta/qendra.fdb",
   // database: 'C:/Users/Silvina/AppData/Local/VirtualStore/Program Files (x86)/SYSTEL/qendra.fdb',
   user: "SYSDBA",
@@ -71,7 +71,7 @@ export function getProductList() {
           if (err) throw err;
           res.forEach(item => {
             p.push({
-              id: item.ID,
+              _id: item.ID,
               name: item.DESCRIPCION,
               price: item.PRECIO,
               type: item.TIPO_VENTA.toString("utf8") == "Unidad" ? 0 : 1

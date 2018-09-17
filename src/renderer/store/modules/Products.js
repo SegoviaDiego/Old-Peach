@@ -3,7 +3,8 @@ import {
   createProduct,
   deleteItems,
   inStock,
-  outStock
+  outStock,
+  syncToSystel
 } from "../backendish/Src/Product";
 import { products as types } from "../vuexTypes";
 
@@ -14,7 +15,9 @@ export default {
     loading: false,
     showSpinner: false,
     buttonRoute: 1,
-    selected: {}
+    selected: {},
+    filter: "",
+    type: 1
   },
   actions: {
     async [types.load]({ commit }) {
@@ -23,6 +26,17 @@ export default {
       setTimeout(() => {
         commit(types.showSpinner);
       }, 200);
+      commit(types.load, await loadProducts());
+      commit(types.stopLoading);
+      commit(types.hideSpinner);
+    },
+    async [types.syncToSystel]({ commit }) {
+      commit(types.startLoading);
+      commit(types.load, []);
+      setTimeout(() => {
+        commit(types.showSpinner);
+      }, 200);
+      await syncToSystel();
       commit(types.load, await loadProducts());
       commit(types.stopLoading);
       commit(types.hideSpinner);
@@ -78,6 +92,9 @@ export default {
         commit(types.hideSpinner);
       });
     },
+    [types.filter]({ commit }, value) {
+      commit(types.filter, value);
+    },
     [types.stopRealTime]() {
       stopRealTimeProducts();
     },
@@ -105,6 +122,9 @@ export default {
     },
     [types.buttons](state, route) {
       state.buttonRoute = route;
+    },
+    [types.filter](state, value) {
+      state.filter = value;
     }
   }
 };
