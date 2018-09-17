@@ -1,6 +1,7 @@
 <template>
   <div class="navbar">
     <div class="routes">
+      asdasd
       <router-link to="/dashboard" class="button dashboard">
         <fontawesome icon="calendar-check" />
       </router-link>
