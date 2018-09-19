@@ -46,7 +46,7 @@
       ]
     },
     "nsis": {
-      "artifactName": "peach-setup-${version}.${ext}"
+      "artifactName": "peach-setup.${ext}"
     },
     "win": {
       "publisherName": "Oxymoron",
