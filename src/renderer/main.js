@@ -25,8 +25,8 @@ import {
 
 import "material-design-icons/iconfont/material-icons.css";
 import "typeface-roboto/index.css";
-// import "typeface-lato";
-// import "typeface-pacifico";
+import "typeface-lato/index.css";
+import "typeface-pacifico/index.css";
 
 //Vue material
 Vue.use(VueMaterial);
