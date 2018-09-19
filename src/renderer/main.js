@@ -5,9 +5,6 @@ import VueMaterial from "vue-material";
 import "vue-material/dist/vue-material.min.css";
 import "vue-material/dist/theme/default.css";
 
-import "typeface-lato";
-import "typeface-pacifico";
-
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {
@@ -28,6 +25,8 @@ import {
 
 import "material-design-icons/iconfont/material-icons.css";
 import "typeface-roboto/index.css";
+// import "typeface-lato";
+// import "typeface-pacifico";
 
 //Vue material
 Vue.use(VueMaterial);
