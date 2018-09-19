@@ -1,6 +1,6 @@
 # Commented sections below can be used to run tests on the CI server
 # https://simulatedgreg.gitbooks.io/electron-vue/content/en/testing.html#on-the-subject-of-ci-testing
-version: 0.0.{ build }
+version: 0.0.{build}
 
 environment:
   GH_TOKEN:
@@ -11,7 +11,8 @@ branches:
     - master
 
 image: Visual Studio 2017
-platform: Any CPU
+platform:
+  - x86
 
 cache:
   - node_modules
@@ -23,7 +24,7 @@ init:
   - git config --global core.autocrlf input
 
 install:
-  - ps: Install-Product node 8 Any CPU
+  - ps: Install-Product node 8 x86
   - git reset --hard HEAD
   - yarn
   - node --version
