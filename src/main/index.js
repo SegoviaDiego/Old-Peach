@@ -1,4 +1,6 @@
-import { app, BrowserWindow, globalShortcut } from "electron";
+import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
+import { autoUpdater } from "electron-updater";
+
 // eslint-disable-line
 /**
  * Set `__static` path to static files in production
@@ -71,3 +73,56 @@ app.on("activate", () => {
 // app.on("ready", () => {
 //   if (process.env.NODE_ENV === "production") autoUpdater.checkForUpdates();
 // });
+
+ipcMain.on("installUpdates", () => {
+  autoUpdater.quitAndInstall();
+});
+
+ipcMain.on("checkForUpdates", event => {
+  autoUpdater.on("error", e => {
+    event.sender.send("updates-reply", {
+      type: "error",
+      payload: {
+        ...e
+      }
+    });
+  });
+  autoUpdater.on("update-available", e => {
+    event.sender.send("updates-reply", {
+      type: "available",
+      payload: {
+        ...e
+      }
+    });
+  });
+  autoUpdater.on("update-not-available", e => {
+    event.sender.send("updates-reply", {
+      type: "not-available",
+      payload: {
+        ...e
+      }
+    });
+  });
+  autoUpdater.on("update-downloaded", () => {
+    event.sender.send("updates-reply", {
+      type: "downloaded"
+    });
+  });
+  autoUpdater.on("download-progress", ({ percent }) => {
+    event.sender.send("updates-reply", {
+      type: "progress",
+      payload: {
+        percent: percent
+      }
+    });
+  });
+
+  autoUpdater.setFeedURL({
+    owner: "Holthain",
+    provider: "github",
+    repo: "peach",
+    url: "https://github.com/Holthain/Peach"
+  });
+
+  autoUpdater.checkForUpdates();
+});

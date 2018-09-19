@@ -1,35 +1,35 @@
 import Datastore from "nedb";
+import Logger from "nedb-logger";
 import path from "path";
 import { remote } from "electron";
 
+const dbFolder = remote.app.getPath("userData");
+
 export const products = new Datastore({
   autoload: true,
-  filename: path.join(remote.app.getPath("userData"), "/products.db")
+  filename: path.join(dbFolder, "/db/products.db")
+});
+
+export const totalSells = new Datastore({
+  autoload: true,
+  filename: path.join(dbFolder, "/db/totalSells.db")
+});
+
+export const sells = new Datastore({
+  autoload: true,
+  filename: path.join(dbFolder, "/db/sells.db")
 });
 
 export const settings = new Datastore({
   autoload: true,
-  filename: path.join(remote.app.getPath("userData"), "/settings.db")
+  filename: path.join(dbFolder, "/db/settings.db")
 });
 
-// import { init, sync } from "./Server/Sequelize";
-// import { listenForChanges, identifyChange } from "./Server/Firebird";
-// import { SYNC_TO_SYSTEL } from "./Src/Product";
+export const log = new Datastore({
+  autoload: false,
+  filename: path.join(dbFolder, "/db/log.db")
+});
 
-// export default function startBackend() {
-//   init(initError => {
-//     if (initError) throw initError;
-//     sync(syncError => {
-//       if (syncError) throw syncError;
-//       console.log("Postgres database running");
-
-//       // Listen for Firebird changes
-//       // listenForChanges();
-//       // SYNC_TO_SYSTEL(() => {
-//       //   console.log("Products synced");
-//       //   identifyChange();
-//       // });
-
-//     });
-//   });
-// }
+export const logger = new Logger({
+  filename: path.join(dbFolder, "/db/log.db")
+});

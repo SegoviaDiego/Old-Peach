@@ -11,12 +11,17 @@
 <script>
 import Header from "./header.vue";
 import Navbar from "./navbar.vue";
+import Updater from "../Updater/index.vue";
 
 export default {
   name: "app-main",
   components: {
     Header,
-    Navbar
+    Navbar,
+    Updater
+  },
+  mounted() {
+    this.$router.push("/charts");
   }
 };
 </script>

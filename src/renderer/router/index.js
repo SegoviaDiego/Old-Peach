@@ -1,35 +1,39 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from "vue";
+import Router from "vue-router";
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
     {
-      path: '/',
-      component: require('@/components/Main/index').default,
+      path: "/",
+      component: require("@/components/Main/index").default,
       children: [
         {
-          path: '/stock',
-          component: require('@/components/Stock/index').default
+          path: "/updater",
+          component: require("@/components/Updater/index").default
         },
         {
-          path: '/egreso',
-          component: require('@/components/Egreso/index').default
+          path: "/dashboard",
+          component: require("@/components/Dashboard/index").default
         },
         {
-          path: '/ingreso',
-          component: require('@/components/Ingreso/index').default
+          path: "/stock",
+          component: require("@/components/Stock/index").default
         },
         {
-          path: '/informes',
-          component: require('@/components/Report/index').default
+          path: "/charts",
+          component: require("@/components/Chart/index").default
+        },
+        {
+          path: "/settings",
+          component: require("@/components/Settings/index").default
         }
       ]
     },
     {
-      path: '*',
-      redirect: '/'
+      path: "*",
+      redirect: "/"
     }
   ]
-})
+});

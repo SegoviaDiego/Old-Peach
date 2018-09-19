@@ -1,13 +1,13 @@
 {
-  "name": "oxyrest",
-  "version": "0.0.0",
+  "name": "peach",
+  "version": "v0.0.2",
   "author": "Diego Segovia <segoviadiegomatias@gmail.com>",
   "description": "Programa para la administración de negocios.",
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
-    "build:dir": "node .electron-vue/build.js && electron-builder --dir --ia32",
+    "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
     "dev": "node .electron-vue/dev-runner.js",
@@ -22,8 +22,8 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "oxyrest",
-    "appId": "org.simulatedgreg.electron-vue",
+    "productName": "Peach!",
+    "appId": "org.oxymoron.peach",
     "directories": {
       "output": "build"
     },
@@ -45,17 +45,26 @@
         }
       ]
     },
-    "mac": {
-      "icon": "build/icons/icon.icns"
+    "nsis": {
+      "artifactName": "peach-setup-${version}.${ext}"
     },
     "win": {
-      "publish": [
-        "github"
-      ],
-      "icon": "build/icons/icon.ico"
+      "publisherName": "Oxymoron",
+      "icon": "build/icons/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "ia32"
+          ]
+        }
+      ]
     },
     "linux": {
       "icon": "build/icons"
+    },
+    "mac": {
+      "icon": "build/icons/icon.icns"
     }
   },
   "dependencies": {
@@ -64,11 +73,15 @@
     "@fortawesome/vue-fontawesome": "^0.1.1",
     "@types/nedb": "^1.8.5",
     "axios": "^0.16.1",
-    "lato-font": "^3.0.0",
+    "chart.js": "^2.7.2",
+    "electron-updater": "^3.1.2",
     "material-design-icons": "^3.0.1",
     "nedb": "^1.8.0",
+    "nedb-logger": "^0.1.0",
     "node-firebird": "^0.8.6",
     "pdfmake": "^0.1.37",
+    "typeface-lato": "^0.0.54",
+    "typeface-pacifico": "^0.0.54",
     "typeface-roboto": "^0.0.54",
     "vue": "^2.3.3",
     "vue-electron": "^1.0.6",

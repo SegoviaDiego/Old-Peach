@@ -11,7 +11,7 @@
         Precio
       </div>
       <div class="column">
-        Cantidad
+        En Stock
       </div>
     </div>
     <div class="body">

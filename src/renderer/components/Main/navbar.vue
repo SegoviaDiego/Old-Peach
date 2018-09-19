@@ -1,17 +1,16 @@
 <template>
   <div class="navbar">
     <div class="routes">
-      asdasd
-      <router-link to="/dashboard" class="button dashboard">
+      <!-- <router-link to="/dashboard" class="button dashboard">
         <fontawesome icon="calendar-check" />
-      </router-link>
+      </router-link> -->
       <router-link to="/stock" class="button stock">
         <fontawesome icon="box-open" />
       </router-link>
       <router-link to="/charts" class="button charts">
         <fontawesome icon="signature" />
       </router-link>
-      <router-link to="/charts" class="button settings">
+      <router-link to="/settings" class="button settings">
         <fontawesome icon="cog" />
       </router-link>
     </div>
@@ -33,9 +32,12 @@ export default {
   .routes {
     height: 100%;
     display: grid;
-    grid-template-rows: 0.35fr 65px 65px 65px 65px;
+    // grid-template-rows: 0.35fr 65px 65px 65px 65px;
+    grid-template-rows: 0.35fr 65px 65px 65px;
     grid-template-columns: 1fr;
-    grid-template-areas: "blank" "dashboard" "stock" "charts" "settings";
+    // grid-template-areas: "blank" "stock" "settings";
+    // grid-template-areas: "blank" "dashboard" "stock" "charts" "settings";
+    grid-template-areas: "blank" "stock" "charts" "settings";
     grid-gap: 17px;
 
     .button {
@@ -48,9 +50,10 @@ export default {
       font-size: 48px;
       transition: 300ms;
       svg {
-        transition: .5s;
+        transition: 0.5s;
       }
-      &:hover, &.router-link-active {
+      &:hover,
+      &.router-link-active {
         svg {
           color: black;
         }
@@ -71,7 +74,7 @@ export default {
     }
     .settings {
       grid-area: settings;
-      background-color: #3D3D3D;
+      background-color: #3d3d3d;
     }
   }
 }

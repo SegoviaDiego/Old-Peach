@@ -52,18 +52,14 @@ export function createProduct(p) {
   });
 }
 
-export function modifyProduct(_id, modifiedProduct) {
+export function modifyProduct(_id, mp) {
   return new Promise((resolve, reject) => {
-    db.update({ _id }, modifiedProduct, {}, err => {
-      if (err) {
-        reject({
-          error: err,
-          code: 2,
-          message: "Ha ocurrido un error inesperado."
-        });
-        throw err;
-      }
-      resolve();
+    db.findOne({ _id }, (err, doc) => {
+      if (err) throw err;
+      db.update({ _id }, { ...doc, ...mp }, {}, err => {
+        if (err) throw err;
+        resolve();
+      });
     });
   });
 }
@@ -80,17 +76,20 @@ export function deleteItems(selected) {
 
 function deleteProduct(_id) {
   return new Promise((resolve, reject) => {
-    db.remove({ _id }, {}, err => {
-      if (err) {
-        reject({
-          error: err,
-          code: 2,
-          message: "Ha ocurrido un error inesperado."
-        });
-        throw err;
-      }
+    db.find({ _id }, (err, docs) => {
       resolve();
     });
+    // db.remove({ _id }, {}, err => {
+    //   if (err) {
+    //     reject({
+    //       error: err,
+    //       code: 2,
+    //       message: "Ha ocurrido un error inesperado."
+    //     });
+    //     throw err;
+    //   }
+    //   resolve();
+    // });
   });
 }
 
@@ -127,28 +126,31 @@ export async function outStock(amount) {
   });
 }
 
-function remove(_id, amount) {
+export function remove(_id, amount) {
   return new Promise(resolve => {
-    db.update({ _id: parseInt(_id) }, { $inc: { stock: - parseFloat(amount) } }, {}, err => {
-      resolve();
-    });
+    db.update(
+      { _id: parseInt(_id) },
+      { $inc: { stock: -parseFloat(amount) } },
+      {},
+      err => {
+        if (err) throw err;
+        resolve();
+      }
+    );
   });
 }
 
 export function syncToSystel() {
   return new Promise(resolve => {
     getProductList().then(async list => {
-      let sysList = await getProductList();
-      let dbList = await loadProducts();
-      let item;
-      for (let index in list) {
-        item = sysList[index];
-
-        if (!dbList[index]) await createProduct({ ...item, stock: 0 });
+      for (let item of list) {
+        if (!(await productExists(item._id)))
+          await createProduct({ ...item, stock: 0 });
         else
           await modifyProduct(item._id, {
-            ...item,
-            stock: dbList[index].stock
+            name: item.name,
+            price: item.price,
+            type: item.type
           });
       }
       resolve();

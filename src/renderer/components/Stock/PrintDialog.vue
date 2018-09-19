@@ -3,7 +3,7 @@
       <md-dialog-title>Imprimir</md-dialog-title>
 
       <md-content>
-        adasd
+        Guardar Stock como pdf
       </md-content>
 
       <md-dialog-actions>

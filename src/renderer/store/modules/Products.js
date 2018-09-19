@@ -32,7 +32,6 @@ export default {
     },
     async [types.syncToSystel]({ commit }) {
       commit(types.startLoading);
-      commit(types.load, []);
       setTimeout(() => {
         commit(types.showSpinner);
       }, 200);

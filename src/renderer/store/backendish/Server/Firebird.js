@@ -1,14 +1,17 @@
+import path from "path";
+import { remote } from "electron";
+import { identifySells, clearTotals, isCleared } from "../Src/TotalSell";
+import { saveLog } from "../Src/Log";
+import { settings as db } from "../datastore";
+import { systel as types } from "../../vuexTypes.js";
+
 const fb = require("node-firebird");
 const fs = require("fs");
-// const SocketManager from './SocketManager'
-// const TotalSell from '../Sockets/TotalSell'
-// const Log from '../Sockets/Log'
 
-let changesToIgnore = 0;
-const options = {
+let options = {
   host: "127.0.0.1",
   port: 3050,
-  database: "C:/projects/qendra.fdb",
+  database: path.join(remote.app.getPath("userData"), "systel.fdb"),
   // database: "C:/Users/YoPC/Desktop/Nueva carpeta/qendra.fdb",
   // database: 'C:/Users/Silvina/AppData/Local/VirtualStore/Program Files (x86)/SYSTEL/qendra.fdb',
   user: "SYSDBA",
@@ -16,18 +19,19 @@ const options = {
 };
 
 export function listenForChanges() {
-  console.log("Listening for Firebird changes");
-  fs.watch(options.database, () => {
-    if (changesToIgnore == 0) {
-      identifyChange();
-    } else {
-      changesToIgnore--;
+  db.findOne({ _id: 1 }, (err, doc) => {
+    if (err) throw err;
+    if (doc) {
+      console.log("Listening for Firebird changes");
+      setInterval(() => {
+        fs.writeFileSync(options.database, fs.readFileSync(doc.src));
+        identifyChange();
+      }, 5000);
     }
   });
 }
 
 export function identifyChange() {
-  changesToIgnore++;
   const totals = [];
   fb.attach(options, (err, db) => {
     if (err) throw err;
@@ -38,18 +42,22 @@ export function identifyChange() {
       (err, res) => {
         db.detach();
         if (err) throw err;
-
         if (res.length > 0) {
           res.forEach(item => {
             totals.push({
-              ProductId: item.ID_PLU,
-              money: parseFloat(item.PE.toFixed(2)),
-              amount: parseFloat(item.CA.toFixed(3))
+              _id: item.ID_PLU,
+              money: item.PE,
+              amount: item.CA
             });
           });
-          TotalSell.identifyTotals(totals);
+          identifySells(totals);
         } else {
-          Log.SAVE(0);
+          isCleared().then(cleared => {
+            if (cleared)
+              saveLog(types.stockCleared).then(() => {
+                clearTotals();
+              });
+          });
         }
       }
     );
@@ -57,7 +65,6 @@ export function identifyChange() {
 }
 
 export function getProductList() {
-  changesToIgnore++;
   return new Promise(resolve => {
     fb.attach(options, (err, db) => {
       if (err) throw err;
@@ -78,6 +85,68 @@ export function getProductList() {
             });
           });
           resolve(p);
+        }
+      );
+    });
+  });
+}
+
+// Faker functions
+
+export function clearSales() {
+  return new Promise(resolve => {
+    fb.attach({ ...options, database: "C:/projects/qendra.fdb" }, (err, db) => {
+      if (err) throw err;
+
+      db.query(
+        "DELETE FROM TOTALES WHERE ID_PLU!=99998 AND ID_PLU!=99999 AND (CA>0 OR PE>0)",
+        [],
+        (err, res) => {
+          db.detach();
+          if (err) throw err;
+          console.log("success");
+          resolve();
+        }
+      );
+    });
+  });
+}
+
+export function createSell() {
+  return new Promise(resolve => {
+    fb.attach({ ...options, database: "C:/projects/qendra.fdb" }, (err, db) => {
+      if (err) throw err;
+
+      // "UPDATE TOTALES SET CA=CA+100 WHERE ID_PLU=1"
+      db.query(
+        "INSERT INTO TOTALES (IP, NUMERO, V1, V2, V3, V4, ID_PLU, ID_SECCION, PE, CA) VALUES (1,1,1,1,1,1,1, 1, 100, 100)",
+        [],
+        err => {
+          db.detach();
+          if (err) throw err;
+          setTimeout(() => {
+            resolve();
+          }, 500);
+        }
+      );
+    });
+  });
+}
+
+export function getTotals() {
+  return new Promise(resolve => {
+    fb.attach({ ...options, database: "C:/projects/qendra.fdb" }, (err, db) => {
+      if (err) throw err;
+
+      db.query(
+        "SELECT ID_PLU, PE, CA FROM TOTALES WHERE ID_PLU!=99998 AND ID_PLU!=99999 AND (CA>0 OR PE>0)",
+        [],
+        (err, res) => {
+          db.detach();
+          if (err) throw err;
+          setTimeout(() => {
+            resolve(res);
+          }, 500);
         }
       );
     });
