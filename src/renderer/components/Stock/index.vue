@@ -1,6 +1,5 @@
 <template>
   <div class="mainGrid">
-    asdasdasd
     <PrintDialog :showDialog="openPrintDialog" v-on:close-print-dialog="closePrintDialog"/>
     <HeaderBar
       v-on:go-to="goTo" v-on:print="print"
@@ -91,7 +90,7 @@ export default {
       });
     }
   },
-  created() {
+  mounted() {
     this.$store.dispatch(types.load);
   },
   data: () => ({

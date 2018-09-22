@@ -72,85 +72,71 @@
 </template>
 
 <script>
-  import { mapState } from 'Vuex';
-  import {products as types} from '../../store/vuexTypes';
+import { mapState } from "Vuex";
+import { products as types } from "../../store/vuexTypes";
 
-  function toLower(text){
-    return text.toString().toLowerCase();
+function toLower(text) {
+  return text.toString().toLowerCase();
+}
+
+function rowToString(row) {
+  let res = "";
+  for (let key in row) {
+    res += toLower(row[key]);
   }
+  return res;
+}
 
-  function rowToString(row) {
-    let res = '';
-    for(let key in row){
-      res += toLower( row[key] );
+export default {
+  name: "products-table",
+  methods: {
+    filterData(data, filter) {
+      if (!this.isFiltered()) return [...data];
+      return data.filter(row => rowToString(row).includes(toLower(filter)));
+    },
+    isFiltered() {
+      return this.filter != null && this.filter.trim() != "";
+    },
+    customSort(data) {
+      const sortBy = this.currentSort;
+      return data.sort((a, b) => {
+        if (sortBy == "id" || sortBy == "stock" || sortBy == "price") {
+          if (this.currentSortOrder === "asc")
+            return parseFloat(a[sortBy]) - parseFloat(b[sortBy]);
+          return parseFloat(b[sortBy]) - parseFloat(a[sortBy]);
+        }
+        if (this.currentSortOrder === "asc")
+          return a[sortBy].localeCompare(b[sortBy]);
+        return b[sortBy].localeCompare(a[sortBy]);
+      });
     }
-    return res;
-  }
-
-  export default {
-    name: 'products-table',
-    methods: {
-      filterData(data, filter) {
-        if(!this.isFiltered()) return [...data];
-        return data.filter(
-            row => (
-              rowToString(row)
-                .includes(toLower(filter))
-            )
-          );
-      },
-      isFiltered() {
-        return (
-          this.filter != null &&
-          this.filter.trim() != ''
-        );
-      },
-      customSort(data) {
-        const sortBy = this.currentSort
-        return data.sort((a, b) => {
-          if(
-            sortBy == 'id' ||
-            sortBy == 'stock' ||
-            sortBy == 'price'){
-            if (this.currentSortOrder === 'asc')
-              return parseFloat(a[sortBy]) - parseFloat(b[sortBy])
-            return parseFloat(b[sortBy]) - parseFloat(a[sortBy])
-          }
-          if (this.currentSortOrder === 'asc')
-            return a[sortBy].localeCompare(b[sortBy])
-          return b[sortBy].localeCompare(a[sortBy])
-        })
-      },
+  },
+  mounted() {
+    this.$store.dispatch(types.load);
+    this.$store.dispatch(types.startRealTime);
+    setTimeout(() => {
+      this.showSpinner = true;
+    }, 300);
+  },
+  beforeDestroy() {
+    this.$store.dispatch(types.stopRealTime);
+  },
+  computed: mapState({
+    filteredData(state) {
+      return this.filterData(state.Products.data, this.filter);
     },
-    created () {
-      this.$store.dispatch(types.load);
-      this.$store.dispatch(types.startRealTime);
-      setTimeout( () => {
-        this.showSpinner = true;
-      }, 300);
-    },
-    beforeDestroy () {
-      this.$store.dispatch(types.stopRealTime);
-    },
-    computed: mapState({
-      filteredData(state) {
-        return this.filterData(
-            state.Products.data,
-            this.filter
-          );
-      },
-      isLoading: state => state.Products.loading
-    }),
-    data: () => ({
-      //loading
-      showSpinner: false,
-      //sorting
-      currentSort: 'id',
-      currentSortOrder: 'asc',
-      //other
-      filter: null,
-    }),
-  }
+    isLoading: state => state.Products.loading
+  }),
+  data: () => ({
+    //loading
+    showSpinner: false,
+    //sorting
+    currentSort: "id",
+    currentSortOrder: "asc",
+    //other
+    filter: null
+  })
+};
 </script>
 
 <style lang="css" scoped>

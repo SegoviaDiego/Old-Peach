@@ -22,8 +22,30 @@ export default new Router({
           component: require("@/components/Stock/index").default
         },
         {
-          path: "/charts",
-          component: require("@/components/Chart/index").default
+          path: "/stats",
+          component: require("@/components/Stats/index").default,
+          children: [
+            {
+              path: "/informes",
+              component: require("@/components/Stats/Informes/index").default
+            },
+            {
+              path: "/sells",
+              component: require("@/components/Stats/Sells/index").default
+            },
+            {
+              path: "/movimientos",
+              component: require("@/components/Stats/Movimientos/index").default
+            },
+            {
+              path: "/ingresos",
+              component: require("@/components/Stats/Ingresos/index").default
+            },
+            {
+              path: "/egresos",
+              component: require("@/components/Stats/Egresos/index").default
+            }
+          ]
         },
         {
           path: "/settings",

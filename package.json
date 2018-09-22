@@ -1,6 +1,6 @@
 {
   "name": "peach",
-  "version": "v0.0.2",
+  "version": "v0.0.7",
   "author": "Diego Segovia <segoviadiegomatias@gmail.com>",
   "description": "Programa para la administración de negocios.",
   "license": null,
@@ -75,6 +75,7 @@
     "axios": "^0.16.1",
     "chart.js": "^2.7.2",
     "electron-updater": "^3.1.2",
+    "lodash": "^4.17.11",
     "material-design-icons": "^3.0.1",
     "nedb": "^1.8.0",
     "nedb-logger": "^0.1.0",

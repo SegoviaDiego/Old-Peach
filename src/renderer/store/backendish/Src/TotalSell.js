@@ -1,5 +1,7 @@
 import { totalSells as db } from "../datastore";
+import { saveLog } from "./Log";
 import { identifySell } from "./Sell";
+import { log as logTypes } from "../../vuexTypes.js";
 
 export function identifySells(systelSells) {
   db.find({}, async (err, docs) => {
@@ -72,18 +74,29 @@ export function clearTotals() {
       },
       err => {
         if (err) throw err;
-        console.log(1);
         resolve();
       }
     );
   });
 }
 
-export function isCleared() {
+export function isEmpty() {
   return new Promise(resolve => {
-    db.count({}, (err, docs) => {
+    db.count({}, (err, count) => {
       if (err) throw err;
-      resolve(docs > 0);
+      resolve(count == 0);
     });
+  });
+}
+
+export function logTotals() {
+  isEmpty().then(empty => {
+    if (!empty)
+      db.find({}, (err, docs) => {
+        if (err) throw err;
+        saveLog(logTypes.totals, docs).then(() => {
+          clearTotals();
+        });
+      });
   });
 }

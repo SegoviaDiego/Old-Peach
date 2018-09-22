@@ -19,6 +19,17 @@ export const products = {
   hideSpinner: "HIDE_SPINNER"
 };
 
-export const systel = {
-  stockCleared: "STOCK_CLEARED"
+export const log = {
+  totals: "LOG_TOTALS",
+  inStock: "LOG_IN_STOCK",
+  outStock: "LOG_OUT_STOCK"
+};
+
+export const sells = {
+  load: "LOAD_SELLS",
+  // mutations
+  startLoading: "START_LOADING",
+  stopLoading: "STOP_LOADING",
+  showSpinner: "SHOW_SPINNER",
+  hideSpinner: "HIDE_SPINNER"
 };

@@ -1,9 +1,7 @@
 import path from "path";
 import { remote } from "electron";
-import { identifySells, clearTotals, isCleared } from "../Src/TotalSell";
-import { saveLog } from "../Src/Log";
+import { identifySells, logTotals } from "../Src/TotalSell";
 import { settings as db } from "../datastore";
-import { systel as types } from "../../vuexTypes.js";
 
 const fb = require("node-firebird");
 const fs = require("fs");
@@ -42,6 +40,7 @@ export function identifyChange() {
       (err, res) => {
         db.detach();
         if (err) throw err;
+
         if (res.length > 0) {
           res.forEach(item => {
             totals.push({
@@ -52,12 +51,7 @@ export function identifyChange() {
           });
           identifySells(totals);
         } else {
-          isCleared().then(cleared => {
-            if (cleared)
-              saveLog(types.stockCleared).then(() => {
-                clearTotals();
-              });
-          });
+          logTotals();
         }
       }
     );

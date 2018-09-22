@@ -103,12 +103,13 @@
           </md-tooltip>
         </button>
         <div class="select">
-          <md-field>
-            <md-select placeholder="Tipo de Egreso">
+          <md-field :class="selectValidClass">
+            <md-select v-model="type" placeholder="Tipo de Egreso">
               <md-option value="1">Transferencia</md-option>
               <md-option value="2">Reciclado</md-option>
               <md-option value="3">Baja</md-option>
             </md-select>
+            <span class="md-error">Debes seleccionar un tipo de egreso</span>
           </md-field>
         </div>
       </template> 
@@ -135,6 +136,10 @@ export default {
     route: state => state.Products.buttonRoute,
     filter: state => state.Products.filter
   }),
+  data: () => ({
+    type: null,
+    selectValidClass: ""
+  }),
   methods: {
     filterChanged(value) {
       this.$store.dispatch(types.filter, value);
@@ -143,6 +148,8 @@ export default {
       this.$emit("print");
     },
     goTo(route, from) {
+      this.type = null;
+      this.selectValidClass = "";
       this.$emit("go-to", route, from);
     },
     saveInStock() {
@@ -150,8 +157,16 @@ export default {
       this.goTo(this.routes.default, this.routes.inStock);
     },
     saveOutStock() {
-      this.$store.dispatch(types.outStock, this.amount);
-      this.goTo(this.routes.default, this.routes.outStock);
+      if (!this.type) {
+        this.selectValidClass = "md-invalid";
+      } else {
+        this.selectValidClass = "";
+        this.$store.dispatch(types.outStock, {
+          amount: this.amount,
+          type: this.type
+        });
+        this.goTo(this.routes.default, this.routes.outStock);
+      }
     },
     validateItem() {
       if (!this.newItem.name) {
@@ -226,7 +241,7 @@ export default {
       align-items: center;
       flex: 2;
       font-size: 34px;
-      color: #3D3D3D;
+      color: #3d3d3d;
     }
   }
   .buttons {
@@ -239,7 +254,7 @@ export default {
       margin-left: 5px;
       transition: 300ms;
       &:hover {
-        color: #FF5722;
+        color: #ff5722;
       }
     }
     .rounded {

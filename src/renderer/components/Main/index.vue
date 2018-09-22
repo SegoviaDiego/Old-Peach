@@ -21,7 +21,8 @@ export default {
     Updater
   },
   mounted() {
-    this.$router.push("/charts");
+    // this.$router.push("/updater");
+    this.$router.push("/informes");
   }
 };
 </script>

@@ -1,33 +1,67 @@
 import { logger as dbLog } from "../datastore";
-import { totalSells as dbTotal } from "../datastore";
-import { systel as types } from "../../vuexTypes.js";
+import { log as types } from "../../vuexTypes.js";
 
-export function saveLog(type) {
+export function saveLog(type, payload) {
   return new Promise(async resolve => {
     switch (type) {
       case types.stockCleared:
-        await saveTotals();
+        await saveTotals(payload);
+        break;
+      case types.inStock:
+        await saveInStock(payload);
+        break;
+      case types.outStock:
+        await saveOutStock(payload);
         break;
     }
     resolve();
   });
 }
 
-export function saveTotals() {
+function saveTotals(totals) {
   return new Promise(resolve => {
-    dbTotal.find({}, (err, docs) => {
-      if (err) throw err;
-      dbLog.insert(
-        {
-          date: new Date(),
-          totals: docs
-        },
-        err => {
-          if (err) throw err;
-          resolve();
-        }
-      );
-    });
+    dbLog.insert(
+      {
+        date: new Date(),
+        totals,
+        type: types.totals
+      },
+      err => {
+        if (err) throw err;
+        resolve();
+      }
+    );
   });
 }
-  
+
+function saveInStock(amount) {
+  return new Promise(resolve => {
+    dbLog.insert(
+      {
+        date: new Date(),
+        amount,
+        type: types.inStock
+      },
+      err => {
+        if (err) throw err;
+        resolve();
+      }
+    );
+  });
+}
+
+function saveOutStock(amount) {
+  return new Promise(resolve => {
+    dbLog.insert(
+      {
+        date: new Date(),
+        amount,
+        type: types.outStock
+      },
+      err => {
+        if (err) throw err;
+        resolve();
+      }
+    );
+  });
+}

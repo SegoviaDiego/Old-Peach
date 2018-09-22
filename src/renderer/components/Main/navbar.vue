@@ -7,7 +7,7 @@
       <router-link to="/stock" class="button stock">
         <fontawesome icon="box-open" />
       </router-link>
-      <router-link to="/charts" class="button charts">
+      <router-link to="/stats/informes" class="button charts">
         <fontawesome icon="signature" />
       </router-link>
       <router-link to="/settings" class="button settings">

@@ -3,21 +3,33 @@ import { remove } from "./Product";
 
 export function identifySell(dbTotal, fbTotal) {
   return new Promise(resolve => {
-    db.insert(
-      {
-        _id: undefined,
-        _productId: fbTotal._id,
-        amount: fbTotal.amount - dbTotal.amount,
-        money: fbTotal.money - dbTotal.money,
-        date: new Date()
-      },
-      (err, sell) => {
-        if (err) throw err;
-        remove(fbTotal._id, sell.amount).then(() => {
-          resolve();
-        });
-      }
-    );
+    createSell({
+      _id: undefined,
+      _productId: fbTotal._id,
+      amount: fbTotal.amount - dbTotal.amount,
+      money: fbTotal.money - dbTotal.money,
+      date: new Date()
+    }).then(sell => {
+      remove(sell._productId, sell.amount).then(() => resolve());
+    });
+  });
+}
+
+export function createSell(sell) {
+  return new Promise(resolve => {
+    db.insert(sell, (err, s) => {
+      if (err) throw err;
+      resolve(s);
+    });
+  });
+}
+
+export function loadSells() {
+  return new Promise(resolve => {
+    db.find({}, (err, s) => {
+      if (err) throw err;
+      resolve(s);
+    });
   });
 }
 

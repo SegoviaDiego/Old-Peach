@@ -1,19 +1,14 @@
 <template>
   <div class="grid">
-    <div class="dailySells">
-       <canvas ref="chart"></canvas>
-    </div>
-    <div class="monthlySells">
-      <button @click="clear()">Clear</button>
-      <button @click="sell()">Fake sell</button>
-    </div>
-    <div class="topProds">
-      asdsadfas
+    <Navtabs/>
+    <div class="content">
+      <router-view/>
     </div>
   </div>
 </template>
 
 <script>
+import Navtabs from "./Navtabs.vue";
 import Chart from "chart.js";
 import {
   clearSales,
@@ -22,7 +17,10 @@ import {
 } from "../../store/backendish/Server/Firebird";
 
 export default {
-  name: "products-page",
+  name: "stats-page",
+  components: {
+    Navtabs
+  },
   data: () => ({
     loading: false
   }),
@@ -107,14 +105,19 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
 .grid {
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-rows: 1fr;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-areas: "dailySells" "monthlySells" "topProds";
+  grid-template-rows: 48px 1fr;
+  grid-template-columns: 1fr;
+  grid-template-areas: "navtabs" "content";
   overflow: hidden;
+  .content {
+    grid-area: content;
+    position: relative;
+    overflow: hidden;
+  }
 }
 </style>

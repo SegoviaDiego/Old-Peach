@@ -1,4 +1,6 @@
 import { products as db } from "../datastore";
+import { saveLog } from "./Log";
+import { log as logTypes } from "../../vuexTypes.js";
 import { getProductList } from "../Server/Firebird";
 
 export function loadProducts() {
@@ -99,7 +101,9 @@ export async function inStock(amount) {
     for (let id of keys) {
       await add(id, amount[id]);
     }
-    resolve();
+    saveLog(logTypes.inStock, amount).then(() => {
+      resolve();
+    });
   });
 }
 
@@ -122,7 +126,9 @@ export async function outStock(amount) {
     for (let id of keys) {
       await remove(id, amount[id]);
     }
-    resolve();
+    saveLog(logTypes.outStock, amount).then(() => {
+      resolve();
+    });
   });
 }
 

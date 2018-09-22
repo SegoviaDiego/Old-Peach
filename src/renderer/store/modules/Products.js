@@ -7,6 +7,7 @@ import {
   syncToSystel
 } from "../backendish/Src/Product";
 import { products as types } from "../vuexTypes";
+import { isEmpty } from "lodash";
 
 export default {
   state: {
@@ -70,7 +71,11 @@ export default {
       commit(types.stopLoading);
       commit(types.hideSpinner);
     },
-    async [types.outStock]({ commit }, amount) {
+    async [types.outStock]({ commit }, payload) {
+      if (isEmpty(payload.amount)) {
+        console.log("OutStock - Amount was empty!");
+        return;
+      }
       commit(types.startLoading);
       setTimeout(() => {
         commit(types.showSpinner);
