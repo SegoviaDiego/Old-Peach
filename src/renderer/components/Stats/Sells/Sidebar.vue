@@ -56,6 +56,7 @@ export default {
     align-items: center;
     overflow: hidden;
     * {
+      display: none;
       color: #000;
       font-size: 24px;
       font-weight: bold;

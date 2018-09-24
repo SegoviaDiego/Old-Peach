@@ -1,6 +1,6 @@
 <template>
   <div class="mainGrid">
-    <PrintDialog :showDialog="openPrintDialog" v-on:close-print-dialog="closePrintDialog"/>
+    <!-- <PrintDialog :showDialog="openPrintDialog" v-on:close-print-dialog="closePrintDialog"/> -->
     <HeaderBar
       v-on:go-to="goTo" v-on:print="print"
       :amount="amount" :selected="selected" :changes="changes"

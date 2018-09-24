@@ -1,5 +1,6 @@
 <template>
   <div class="grid">
+    <Toolbar/>
     <div class="head">
       <div class="column">
         Articulo
@@ -14,20 +15,20 @@
         Total
       </div>
     </div>
-    <div class="body">
-      <template v-for="i in 50">
-        <div :key="'row-' + i" class="row">
+    <div class="body" v-loading="isLoading">
+      <template v-for="sell in filteredData">
+        <div :key="sell._id" class="row">
           <div class="column">
-            Articulo
+            {{ products.get(sell._productId).name }}
           </div>
           <div class="column">
-            Precio
+            {{ products.get(sell._productId).price }}
           </div>
           <div class="column">
-            Cantidad
+            {{ (sell.amount % 1 == 0) ? sell.amount : (sell.amount).toFixed(3) }}
           </div>
           <div class="column">
-            Total
+            {{ (sell.money % 1 == 0) ? sell.money : (sell.money).toFixed(2) }}
           </div>
         </div>
       </template>
@@ -36,11 +37,15 @@
 </template>
 
 <script>
+import Toolbar from "./Toolbar.vue";
 import { mapState } from "Vuex";
-import { totals as types } from "../../../store/vuexTypes";
+import { sells as types } from "../../../store/vuexTypes";
 
 export default {
   name: "informes-table",
+  components: {
+    Toolbar
+  },
   mounted() {
     this.$store.dispatch(types.load);
   },
@@ -48,11 +53,14 @@ export default {
     openPrintDialog: false
   }),
   computed: mapState({
-    filter: state => state.Totals.filter,
-    isLoading: state => state.Totals.loading,
-    showSpinner: state => state.Totals.showSpinner,
+    filter: state => state.Sells.filter,
+    isLoading: state => state.Sells.loading,
+    showSpinner: state => state.Sells.showSpinner,
     filteredData(state) {
-      return this.sortData(this.filterData([...state.Totals.data]));
+      return this.sortData(this.filterData([...state.Sells.data]));
+    },
+    products(state) {
+      return this.toMap([...state.Products.data]);
     }
   }),
   methods: {
@@ -62,8 +70,15 @@ export default {
     print() {
       this.openPrintDialog = true;
     },
+    toMap(data) {
+      const res = new Map();
+      for (let index in data) {
+        res.set(data[index]._id, data[index]);
+      }
+      return res;
+    },
     addKeyValues(obj) {
-      let values = "";
+      let values = this.products.get(obj._productId).name + "";
       for (let val of Object.values(obj)) {
         values += val;
       }
@@ -103,11 +118,12 @@ $bFontSize: 17px;
 $bFontColor: #a0a0a0;
 
 .grid {
+  padding: 10px;
   grid-area: table;
   display: grid;
-  grid-template-rows: 50px 9fr;
+  grid-template-rows: 70px 50px 1fr;
   grid-template-columns: 1fr;
-  grid-template-areas: "head" "body";
+  grid-template-areas: "toolbar" "head" "body";
   overflow: hidden;
   background-color: #eeeeee;
   border-radius: 7px;

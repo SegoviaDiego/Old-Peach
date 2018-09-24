@@ -1,9 +1,14 @@
 import Vue from "vue";
 import axios from "axios";
+import App from "./App";
+import router from "./router";
+import store from "./store";
 
-import VueMaterial from "vue-material";
-import "vue-material/dist/vue-material.min.css";
-import "vue-material/dist/theme/default.css";
+import Buefy from "buefy";
+import "buefy/dist/buefy.css";
+
+import ElementUI from "element-ui";
+import "element-ui/lib/theme-chalk/index.css";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -20,16 +25,15 @@ import {
   faSave,
   faSearch,
   faPrint,
-  faCog
+  faCog,
+  faWindowMinimize
 } from "@fortawesome/free-solid-svg-icons";
 
-import "material-design-icons/iconfont/material-icons.css";
-import "typeface-roboto/index.css";
 import "typeface-lato/index.css";
 import "typeface-pacifico/index.css";
 
-//Vue material
-Vue.use(VueMaterial);
+Vue.use(Buefy);
+Vue.use(ElementUI);
 
 //Font awesome
 library.add(
@@ -45,14 +49,11 @@ library.add(
   faSave,
   faSearch,
   faPrint,
-  faCog
+  faCog,
+  faWindowMinimize
 );
 
 Vue.component("fontawesome", FontAwesomeIcon);
-
-import App from "./App";
-import router from "./router";
-import store from "./store";
 
 if (!process.env.IS_WEB) Vue.use(require("vue-electron"));
 Vue.http = Vue.prototype.$http = axios;

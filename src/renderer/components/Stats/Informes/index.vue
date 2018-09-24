@@ -1,5 +1,5 @@
 <template>
-  <div class="grid">
+  <div class="indexGrid">
     <Toolbar/>
     <Table/>
     <Sidebar/>
@@ -23,14 +23,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.grid {
+.indexGrid {
+  position: relative;
   width: 100%;
   height: 100%;
   display: grid;
   grid-template-rows: 100px 1fr;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 3fr 1fr;
   grid-template-areas: "toolbar toolbar" "table sidebar";
   overflow: hidden;
-  padding: 10px 20px;
+  padding: 20px 40px;
 }
 </style>

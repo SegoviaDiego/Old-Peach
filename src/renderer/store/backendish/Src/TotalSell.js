@@ -3,6 +3,15 @@ import { saveLog } from "./Log";
 import { identifySell } from "./Sell";
 import { log as logTypes } from "../../vuexTypes.js";
 
+export function load() {
+  return new Promise(resolve => {
+    db.find({}, (err, docs) => {
+      if (err) throw err;
+      console.log(docs);
+    });
+  });
+}
+
 export function identifySells(systelSells) {
   db.find({}, async (err, docs) => {
     if (err) throw err;

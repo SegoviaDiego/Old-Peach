@@ -22,10 +22,17 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #app {
   -webkit-user-select: none;
   user-select: none;
   cursor: default;
+}
+
+html {
+  overflow: hidden;
+  button {
+    outline: none;
+  }
 }
 </style>

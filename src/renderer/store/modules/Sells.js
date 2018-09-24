@@ -3,12 +3,11 @@ import { sells as types } from "../vuexTypes";
 
 export default {
   state: {
+    date: new Date(),
     data: [],
     loading: false,
     showSpinner: false,
-    filter: "",
-    from: 0,
-    to: 10
+    filter: ""
   },
   actions: {
     async [types.load]({ commit, state }) {
@@ -16,9 +15,12 @@ export default {
       setTimeout(() => {
         commit(types.showSpinner);
       }, 200);
-      commit(types.load, await loadSells(state.from, state.to));
+      commit(types.load, await loadSells(state.date));
       commit(types.stopLoading);
       commit(types.hideSpinner);
+    },
+    [types.setDate]({ commit }, newDate) {
+      commit(types.setDate, newDate);
     }
   },
   mutations: {
@@ -41,6 +43,9 @@ export default {
     },
     [types.filter](state, value) {
       state.filter = value;
+    },
+    [types.setDate](state, value) {
+      state.date = value;
     }
   }
 };

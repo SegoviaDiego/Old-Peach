@@ -24,12 +24,23 @@ export function createSell(sell) {
   });
 }
 
-export function loadSells() {
+export function loadSells(date) {
   return new Promise(resolve => {
-    db.find({}, (err, s) => {
-      if (err) throw err;
-      resolve(s);
-    });
+    db.find(
+      {
+        $where: function() {
+          return (
+            this.date.getFullYear() == date.getFullYear() &&
+            this.date.getMonth() == date.getMonth() &&
+            this.date.getDate() == date.getDate()
+          );
+        }
+      },
+      (err, sells) => {
+        if (err) throw err;
+        resolve(sells);
+      }
+    );
   });
 }
 

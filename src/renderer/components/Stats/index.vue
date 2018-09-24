@@ -1,6 +1,24 @@
 <template>
   <div class="grid">
-    <Navtabs/>
+    <div class="navtabs">
+      <div class="tabs">
+        <router-link to="/informes" class="tab">
+          Informes
+        </router-link>
+        <router-link to="/sells" class="tab">
+          Ventas
+        </router-link>
+        <router-link to="/movimientos" class="tab">
+          Movimientos
+        </router-link>
+        <router-link to="/ingresos" class="tab">
+          Ingresos
+        </router-link>
+        <router-link to="/egresos" class="tab">
+          Egresos
+        </router-link>
+      </div>
+    </div>
     <div class="content">
       <router-view/>
     </div>
@@ -8,7 +26,6 @@
 </template>
 
 <script>
-import Navtabs from "./Navtabs.vue";
 import Chart from "chart.js";
 import {
   clearSales,
@@ -18,9 +35,6 @@ import {
 
 export default {
   name: "stats-page",
-  components: {
-    Navtabs
-  },
   data: () => ({
     loading: false
   }),
@@ -114,6 +128,9 @@ export default {
   grid-template-columns: 1fr;
   grid-template-areas: "navtabs" "content";
   overflow: hidden;
+  .navtabs {
+    grid-area: navtabs;
+  }
   .content {
     grid-area: content;
     position: relative;

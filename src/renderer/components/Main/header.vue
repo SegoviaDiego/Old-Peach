@@ -11,17 +11,13 @@
       </div>
     </div>
     <div class="windowtools">
-      <button @click="outterFrameUtils(1)"
-        class="md-icon-button">
-          <md-icon style="color:white;">
-            details
-          </md-icon>
+      <button @click="outterFrameUtils(1)">
+          <i class="el-icon-minus"></i>
+          <!-- <fontawesome icon="window-minimize" /> -->
       </button>
-      <button @click="outterFrameUtils(3)"
-        class="md-icon-button">
-          <md-icon style="color:white;">
-            close
-          </md-icon>
+      <button @click="outterFrameUtils(3)">
+          <i class="el-icon-close"></i>
+          <!-- <fontawesome icon="times" /> -->
       </button>
     </div>
   </div>
@@ -85,11 +81,14 @@ export default {
   justify-content: flex-end;
   align-items: center;
   -webkit-user-select: none;
-  user-select: none;  
+  user-select: none;
   button {
-    padding: 0;
-    margin: 0;
-    font-weight: 900;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
     background: transparent;
     text-decoration: none;
     border: none;

@@ -59,10 +59,9 @@
         </div>
         <div class="column">
           <template v-if="route === routes.inStock || route === routes.outStock">
-            <input
-            :value="amount[item._id]"
-            @change="inputStock(item._id, $event.target.value)"
-            :placeholder="item.stock + ' en stock'" type="number" min="0">
+            <el-input-number
+              v-model="amount[item._id]"
+              :min="0" />
           </template>
           <template v-else-if="route === routes.deleteItems">
             {{item.stock}}
@@ -107,9 +106,6 @@ export default {
     route: state => state.Products.buttonRoute
   }),
   methods: {
-    inputStock(_id, amount) {
-      this.$emit("input-stock", _id, amount);
-    },
     editValue(_id, att, value) {
       this.$emit("edit-item-value", _id, att, value);
     }

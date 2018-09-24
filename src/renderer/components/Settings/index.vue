@@ -1,18 +1,16 @@
 <template>
   <div class="mainGrid">
     <template v-if="stage == 1">
-      <md-field>
-        <label>Password</label>
-        <md-input v-model="password"/>
-      </md-field>
-       <md-button @click="login()" class="md-raised">Ingresar</md-button>
+      <b-field label="Password">
+          <b-input v-model="password"></b-input>
+      </b-field>
+      <el-button @click="login()" type="primary" plain>Ingresar</el-button>
     </template>
     <template v-if="stage == 2">
-      <md-field>
-        <label>Direccion de la base de datos</label>
-        <md-file v-model="src" />
-      </md-field>
-       <md-button @click="saveSrc()" class="md-raised">Guardar</md-button>
+      <b-field label="Direccion de la base de datos">
+          <b-input v-model="src"></b-input>
+      </b-field>
+      <el-button @click="saveSrc()" type="primary" plain>Guardar</el-button>
     </template>
     <template v-if="stage == 3">
       success! route: {{src}}

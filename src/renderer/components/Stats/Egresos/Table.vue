@@ -1,5 +1,6 @@
 <template>
   <div class="grid">
+    <Toolbar/>
     <div class="head">
       <div class="column">
         Articulo
@@ -36,11 +37,15 @@
 </template>
 
 <script>
+import Toolbar from "./Toolbar.vue";
 import { mapState } from "Vuex";
 import { totals as types } from "../../../store/vuexTypes";
 
 export default {
   name: "informes-table",
+  components: {
+    Toolbar
+  },
   mounted() {
     this.$store.dispatch(types.load);
   },
@@ -103,11 +108,12 @@ $bFontSize: 17px;
 $bFontColor: #a0a0a0;
 
 .grid {
+  padding: 10px;
   grid-area: table;
   display: grid;
-  grid-template-rows: 50px 9fr;
+  grid-template-rows: 70px 50px 1fr;
   grid-template-columns: 1fr;
-  grid-template-areas: "head" "body";
+  grid-template-areas: "toolbar" "head" "body";
   overflow: hidden;
   background-color: #eeeeee;
   border-radius: 7px;

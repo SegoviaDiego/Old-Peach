@@ -4,13 +4,13 @@
       <!-- <router-link to="/dashboard" class="button dashboard">
         <fontawesome icon="calendar-check" />
       </router-link> -->
-      <router-link to="/stock" class="button stock">
+      <router-link to="/stock" class="route stock">
         <fontawesome icon="box-open" />
       </router-link>
-      <router-link to="/stats/informes" class="button charts">
+      <router-link to="/informes" class="route charts">
         <fontawesome icon="signature" />
       </router-link>
-      <router-link to="/settings" class="button settings">
+      <router-link to="/settings" class="route settings">
         <fontawesome icon="cog" />
       </router-link>
     </div>
@@ -31,6 +31,7 @@ export default {
   background-color: #e1e2e1;
   .routes {
     height: 100%;
+    width: 100%;
     display: grid;
     // grid-template-rows: 0.35fr 65px 65px 65px 65px;
     grid-template-rows: 0.35fr 65px 65px 65px;
@@ -40,7 +41,7 @@ export default {
     grid-template-areas: "blank" "stock" "charts" "settings";
     grid-gap: 17px;
 
-    .button {
+    .route {
       height: 65px;
       margin-bottom: 17px;
       display: flex;

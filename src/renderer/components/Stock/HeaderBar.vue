@@ -2,7 +2,7 @@
   <div class="header">
     <div class="searchbar">
       <div class="container">
-        <div class="input">
+        <div class="inputContainer">
           <input
               :value="filter"
               @input="filterChanged($event.target.value)"
@@ -17,21 +17,12 @@
       <template v-if="route === routes.default">
         <button @click="goTo(routes.inStock)" class="rounded">
           Ingreso
-          <md-tooltip md-direction="top">
-            Ingreso
-          </md-tooltip>
         </button>
         <button @click="goTo(routes.outStock)" class="rounded">
           Egreso
-          <md-tooltip md-direction="top">
-            Egreso
-          </md-tooltip>
         </button>
         <button @click="print()" class="circle gray">
           <fontawesome icon="print" />
-          <md-tooltip md-direction="top">
-            Imprimir
-          </md-tooltip>
         </button>
         <!-- <button @click="goTo(routes.more)" class="circle">
           <fontawesome icon="ellipsis-h" />
@@ -78,39 +69,24 @@
       <template v-else-if="route === routes.inStock">
         <button @click="goTo(routes.default, routes.inStock)" class="circle">
           <fontawesome icon="times" />
-          <md-tooltip md-direction="top">
-            Cancelar
-          </md-tooltip>
         </button>
         <button @click="saveInStock()" class="circle">
           <fontawesome icon="save" />
-          <md-tooltip md-direction="top">
-            Guardar cambios
-          </md-tooltip>
         </button>
       </template>
       <template v-else-if="route === routes.outStock">
         <button @click="goTo(routes.default, routes.outStock)" class="circle">
           <fontawesome icon="times" />
-          <md-tooltip md-direction="top">
-            Cancelar
-          </md-tooltip>
         </button>
         <button @click="saveOutStock()" class="circle">
           <fontawesome icon="save" />
-          <md-tooltip md-direction="top">
-            Guardar cambios
-          </md-tooltip>
         </button>
         <div class="select">
-          <md-field :class="selectValidClass">
-            <md-select v-model="type" placeholder="Tipo de Egreso">
-              <md-option value="1">Transferencia</md-option>
-              <md-option value="2">Reciclado</md-option>
-              <md-option value="3">Baja</md-option>
-            </md-select>
-            <span class="md-error">Debes seleccionar un tipo de egreso</span>
-          </md-field>
+          <el-select v-model="type" placeholder="Tipo de egreso">
+            <el-option value="1" label="Transferencia" />
+            <el-option value="2" label="Reciclado" />
+            <el-option value="3" label="Baja" />
+          </el-select>
         </div>
       </template> 
     </div>
@@ -137,8 +113,7 @@ export default {
     filter: state => state.Products.filter
   }),
   data: () => ({
-    type: null,
-    selectValidClass: ""
+    type: null
   }),
   methods: {
     filterChanged(value) {
@@ -149,7 +124,6 @@ export default {
     },
     goTo(route, from) {
       this.type = null;
-      this.selectValidClass = "";
       this.$emit("go-to", route, from);
     },
     saveInStock() {
@@ -158,9 +132,15 @@ export default {
     },
     saveOutStock() {
       if (!this.type) {
-        this.selectValidClass = "md-invalid";
+        this.$notify({
+          title: "No has seleccionado un tipo de egreso",
+          message:
+            "Antes de guardar los cambios debes elegir el tipo de egreso (Transferencia, reciclado o baja)",
+          type: "warning",
+          duration: 5000,
+          offset: 170
+        });
       } else {
-        this.selectValidClass = "";
         this.$store.dispatch(types.outStock, {
           amount: this.amount,
           type: this.type
@@ -217,9 +197,10 @@ export default {
       align-items: center;
       background-color: #e1e2e1;
     }
-    .input {
+    .inputContainer {
       flex: 8;
       height: 100%;
+      background-color: transparent;
       input {
         padding: 0px 10px;
         font-size: 20px;
@@ -228,18 +209,19 @@ export default {
         height: 100%;
         border-color: none;
         outline: none;
-        background-color: transparent;
+        background-color: transparent !important;
         border: none;
         border-radius: none;
         box-shadow: none;
       }
     }
     .icon {
+      flex: 1;
+      height: 100%;
       display: flex;
       margin-right: 15px;
       justify-content: flex-end;
       align-items: center;
-      flex: 2;
       font-size: 34px;
       color: #3d3d3d;
     }

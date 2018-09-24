@@ -73,8 +73,10 @@
     "@fortawesome/vue-fontawesome": "^0.1.1",
     "@types/nedb": "^1.8.5",
     "axios": "^0.16.1",
+    "buefy": "^0.6.7",
     "chart.js": "^2.7.2",
     "electron-updater": "^3.1.2",
+    "element-ui": "^2.4.7",
     "lodash": "^4.17.11",
     "material-design-icons": "^3.0.1",
     "nedb": "^1.8.0",
@@ -86,7 +88,6 @@
     "typeface-roboto": "^0.0.54",
     "vue": "^2.3.3",
     "vue-electron": "^1.0.6",
-    "vue-material": "^1.0.0-beta-10.2",
     "vue-router": "^2.5.3",
     "vuex": "^2.3.1"
   },

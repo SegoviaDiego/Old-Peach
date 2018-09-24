@@ -25,8 +25,19 @@ export const log = {
   outStock: "LOG_OUT_STOCK"
 };
 
+export const totals = {
+  load: "LOAD_TOTALS",
+  // mutations
+  startLoading: "START_LOADING",
+  stopLoading: "STOP_LOADING",
+  showSpinner: "SHOW_SPINNER",
+  hideSpinner: "HIDE_SPINNER"
+};
+
 export const sells = {
   load: "LOAD_SELLS",
+  filter: "FILTER_CHANGE",
+  setDate: "SET_SELLS_DATE",
   // mutations
   startLoading: "START_LOADING",
   stopLoading: "STOP_LOADING",

@@ -9,7 +9,7 @@
           <div class="line"/>
         </div>
       </template>
-      <div class="section">
+      <div class="section active">
         <div class="title">
           Total
         </div>
@@ -19,18 +19,12 @@
     <div class="searchbar">
       <input placeholder="Buscar" type="text" />
     </div>
-    <div class="buttons">
+    <div class="btnTools">
       <button @click="setDate()" class="rect">
         Fecha
-        <md-tooltip md-direction="top">
-          Seleccionar fecha
-        </md-tooltip>
       </button>
       <button @click="print()" class="circle">
         <fontawesome icon="print" />
-        <md-tooltip md-direction="top">
-          Imprimir
-        </md-tooltip>
       </button>
     </div>
   </div>
@@ -51,6 +45,9 @@ export default {
 <style lang="scss" scoped>
 .grid {
   grid-area: toolbar;
+  position: relative;
+  width: 100%;
+  height: 100%;
   display: grid;
   grid-template-rows: 1fr;
   grid-template-columns: 3fr 300px 2fr;
@@ -62,9 +59,11 @@ export default {
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+    overflow: hidden;
     .section {
       flex: 1;
       height: 100%;
+      padding: 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -73,15 +72,15 @@ export default {
       * {
         transition: 200ms;
       }
-      &:hover {
-        .line {
-          margin-top: 7px;
-          background-color: #000;
-          width: 60%;
-          height: 5px;
-        }
+      &:hover .line,
+      &.active .line {
+        margin-top: 7px;
+        background-color: #000;
+        width: 60%;
+        height: 5px;
       }
       .title {
+        margin: 0;
         text-transform: capitalize;
         font-family: Lato;
         font-weight: bold;
@@ -90,7 +89,7 @@ export default {
       }
       .line {
         margin-top: 5px;
-        background-color: #000;
+        background-color: #a0a0a0;
         width: 30%;
         height: 3px;
       }
@@ -116,7 +115,7 @@ export default {
       width: 250px;
     }
   }
-  .buttons {
+  .btnTools {
     grid-area: buttons;
     display: flex;
     flex-direction: row;
