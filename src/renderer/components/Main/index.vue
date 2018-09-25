@@ -22,7 +22,7 @@ export default {
   },
   mounted() {
     // this.$router.push("/updater");
-    this.$router.push("/sells");
+    this.$router.push("/informes");
   }
 };
 </script>

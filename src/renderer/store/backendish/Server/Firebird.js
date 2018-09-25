@@ -1,6 +1,6 @@
 import path from "path";
 import { remote } from "electron";
-import { identifySells, logTotals } from "../Src/TotalSell";
+import { identifySells, saveCierre } from "../Src/Total";
 import { settings as db } from "../datastore";
 
 const fb = require("node-firebird");
@@ -21,10 +21,11 @@ export function listenForChanges() {
     if (err) throw err;
     if (doc) {
       console.log("Listening for Firebird changes");
-      setInterval(() => {
-        fs.writeFileSync(options.database, fs.readFileSync(doc.src));
-        identifyChange();
-      }, 5000);
+      identifyChange();
+      // setInterval(() => {
+      //   fs.writeFileSync(options.database, fs.readFileSync(doc.src));
+      //   identifyChange();
+      // }, 5000);
     }
   });
 }
@@ -41,6 +42,7 @@ export function identifyChange() {
         db.detach();
         if (err) throw err;
 
+        
         if (res.length > 0) {
           res.forEach(item => {
             totals.push({
@@ -51,7 +53,7 @@ export function identifyChange() {
           });
           identifySells(totals);
         } else {
-          logTotals();
+          saveCierre();
         }
       }
     );

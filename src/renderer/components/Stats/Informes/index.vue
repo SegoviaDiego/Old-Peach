@@ -10,6 +10,7 @@
 import Toolbar from "./Toolbar.vue";
 import Table from "./Table.vue";
 import Sidebar from "./Sidebar.vue";
+import { totals as types } from "../../../store/vuexTypes";
 
 export default {
   name: "informes",
@@ -18,7 +19,9 @@ export default {
     Table,
     Sidebar
   },
-  mounted() {}
+  mounted() {
+    this.$store.dispatch(types.load);
+  }
 };
 </script>
 

@@ -22,13 +22,13 @@
             {{ products.get(sell._productId).name }}
           </div>
           <div class="column">
-            {{ products.get(sell._productId).price }}
+            $ {{ products.get(sell._productId).price }}
           </div>
           <div class="column">
-            {{ (sell.amount % 1 == 0) ? sell.amount : (sell.amount).toFixed(3) }}
+            {{ (sell.amount % 1 == 0) ? sell.amount : (sell.amount).toFixed(3) }} U
           </div>
           <div class="column">
-            {{ (sell.money % 1 == 0) ? sell.money : (sell.money).toFixed(2) }}
+            $ {{ (sell.money % 1 == 0) ? sell.money : (sell.money).toFixed(2) }}
           </div>
         </div>
       </template>

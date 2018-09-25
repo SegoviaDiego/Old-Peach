@@ -1,5 +1,4 @@
 import Datastore from "nedb";
-import Logger from "nedb-logger";
 import path from "path";
 import { remote } from "electron";
 
@@ -10,14 +9,14 @@ export const products = new Datastore({
   filename: path.join(dbFolder, "/db/products.db")
 });
 
-export const totalSells = new Datastore({
+export const Total = new Datastore({
   autoload: true,
-  filename: path.join(dbFolder, "/db/totalSells.db")
+  filename: path.join(dbFolder, "/db/CurrentTotal.db")
 });
 
-export const sells = new Datastore({
+export const Totals = new Datastore({
   autoload: true,
-  filename: path.join(dbFolder, "/db/sells.db")
+  filename: path.join(dbFolder, "/db/Totals.db")
 });
 
 export const settings = new Datastore({
@@ -25,11 +24,7 @@ export const settings = new Datastore({
   filename: path.join(dbFolder, "/db/settings.db")
 });
 
-export const log = new Datastore({
-  autoload: false,
-  filename: path.join(dbFolder, "/db/log.db")
-});
-
-export const logger = new Logger({
-  filename: path.join(dbFolder, "/db/log.db")
-});
+// export const sells = new Datastore({
+//   autoload: true,
+//   filename: path.join(dbFolder, "/db/sells.db")
+// });

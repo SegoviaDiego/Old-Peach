@@ -7,14 +7,12 @@ import {
   syncToSystel
 } from "../backendish/Src/Product";
 import { products as types } from "../vuexTypes";
-import { isEmpty } from "lodash";
 
 export default {
   state: {
     data: [],
     inputs: {},
     loading: false,
-    showSpinner: false,
     buttonRoute: 1,
     selected: {},
     filter: "",
@@ -24,76 +22,43 @@ export default {
     async [types.load]({ commit }) {
       commit(types.startLoading);
       commit(types.load, []);
-      setTimeout(() => {
-        commit(types.showSpinner);
-      }, 200);
       commit(types.load, await loadProducts());
       commit(types.stopLoading);
-      commit(types.hideSpinner);
     },
     async [types.syncToSystel]({ commit }) {
       commit(types.startLoading);
-      setTimeout(() => {
-        commit(types.showSpinner);
-      }, 200);
       await syncToSystel();
       commit(types.load, await loadProducts());
-      commit(types.stopLoading);
-      commit(types.hideSpinner);
     },
     async [types.create]({ commit }, product) {
       commit(types.startLoading);
-      setTimeout(() => {
-        commit(types.showSpinner);
-      }, 200);
       await createProduct(product);
       commit(types.load, await loadProducts());
       commit(types.stopLoading);
-      commit(types.hideSpinner);
     },
     async [types.delete]({ commit }, selected) {
       commit(types.startLoading);
-      setTimeout(() => {
-        commit(types.showSpinner);
-      }, 200);
       await deleteItems(selected);
       commit(types.load, await loadProducts());
       commit(types.stopLoading);
-      commit(types.hideSpinner);
     },
     async [types.inStock]({ commit }, amount) {
       commit(types.startLoading);
-      setTimeout(() => {
-        commit(types.showSpinner);
-      }, 200);
       await inStock(amount);
       commit(types.load, await loadProducts());
       commit(types.stopLoading);
-      commit(types.hideSpinner);
     },
     async [types.outStock]({ commit }, payload) {
-      if (isEmpty(payload.amount)) {
-        console.log("OutStock - Amount was empty!");
-        return;
-      }
       commit(types.startLoading);
-      setTimeout(() => {
-        commit(types.showSpinner);
-      }, 200);
-      await outStock(amount);
+      await outStock(payload);
       commit(types.load, await loadProducts());
       commit(types.stopLoading);
-      commit(types.hideSpinner);
     },
     [types.startRealTime]({ commit }) {
       startRealTimeProducts(async () => {
         commit(types.startLoading);
-        setTimeout(() => {
-          commit(types.showSpinner);
-        }, 200);
         commit(types.load, await loadProducts());
         commit(types.stopLoading);
-        commit(types.hideSpinner);
       });
     },
     [types.filter]({ commit }, value) {
@@ -115,14 +80,6 @@ export default {
     },
     [types.stopLoading](state) {
       state.loading = false;
-    },
-    [types.showSpinner](state) {
-      if (state.loading) {
-        state.showSpinner = true;
-      }
-    },
-    [types.hideSpinner](state) {
-      state.showSpinner = false;
     },
     [types.buttons](state, route) {
       state.buttonRoute = route;

@@ -14,7 +14,7 @@
         En Stock
       </div>
     </div>
-    <div class="body">
+    <div class="body" v-loading="isLoading">
       <div v-if="route === routes.createItem" class="row">
         <div class="column">
           <input placeholder="Codigo" type="text" v-model.lazy="newItem._id">
@@ -60,7 +60,7 @@
         <div class="column">
           <template v-if="route === routes.inStock || route === routes.outStock">
             <el-input-number
-              v-model="amount[item._id]"
+              v-model.lazy="amount[item._id]"
               :min="0" />
           </template>
           <template v-else-if="route === routes.deleteItems">

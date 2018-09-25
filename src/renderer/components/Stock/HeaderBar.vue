@@ -85,7 +85,7 @@
           <el-select v-model="type" placeholder="Tipo de egreso">
             <el-option value="1" label="Transferencia" />
             <el-option value="2" label="Reciclado" />
-            <el-option value="3" label="Baja" />
+            <el-option value="3" label="Vencimiento" />
           </el-select>
         </div>
       </template> 
@@ -96,6 +96,7 @@
 <script>
 import { mapState } from "Vuex";
 import { products as types } from "../../store/vuexTypes";
+import _ from "lodash";
 
 export default {
   name: "products-header",
@@ -131,6 +132,9 @@ export default {
       this.goTo(this.routes.default, this.routes.inStock);
     },
     saveOutStock() {
+      let amount = _.pickBy(this.amount, function(n) {
+        return n != null && n != undefined;
+      });
       if (!this.type) {
         this.$notify({
           title: "No has seleccionado un tipo de egreso",
@@ -140,9 +144,17 @@ export default {
           duration: 5000,
           offset: 170
         });
+      } else if (_.isEmpty(amount)) {
+        this.$notify({
+          title: "Egreso vacio!",
+          message: "No has colocado ningun valor al egreso.",
+          type: "warning",
+          duration: 5000,
+          offset: 170
+        });
       } else {
         this.$store.dispatch(types.outStock, {
-          amount: this.amount,
+          amount: amount,
           type: this.type
         });
         this.goTo(this.routes.default, this.routes.outStock);

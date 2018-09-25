@@ -5,19 +5,12 @@
 </template>
 
 <script>
-import { products as types } from "./store/vuexTypes";
-import {
-  listenForChanges,
-  isSrcReady
-} from "./store/backendish/server/Firebird.js";
+import initServer from "./store/backendish/server/Server.js";
 
 export default {
   name: "oxyrest",
   mounted() {
-    this.$store.dispatch(types.syncToSystel);
-    setTimeout(() => {
-      listenForChanges();
-    }, 1000);
+    initServer(this.$store.dispatch);
   }
 };
 </script>

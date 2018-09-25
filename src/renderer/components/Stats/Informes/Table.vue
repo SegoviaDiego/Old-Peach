@@ -14,20 +14,26 @@
         Total
       </div>
     </div>
-    <div class="body">
-      <template v-for="i in 50">
-        <div :key="'row-' + i" class="row">
+    <div class="body" v-loading="isLoading">
+      <template v-if="cierreIndex == null">
+        No has seleccionado un cierre
+      </template>
+      <template v-else-if="cierre.length <= 0">
+        No se realizaron ventas el dia seleccionado
+      </template>
+      <template v-else v-for="total in cierre">
+        <div :key="total._id" class="row">
           <div class="column">
-            Articulo
+            {{products[total._id].name}}
           </div>
           <div class="column">
-            Precio
+            $ {{products[total._id].price}}
           </div>
           <div class="column">
-            Cantidad
+            {{total.amount}} Kg
           </div>
           <div class="column">
-            Total
+            $ {{total.money}}
           </div>
         </div>
       </template>
@@ -38,24 +44,42 @@
 <script>
 import { mapState } from "Vuex";
 import { totals as types } from "../../../store/vuexTypes";
+import _ from "lodash";
 
 export default {
   name: "informes-table",
-  mounted() {
-    this.$store.dispatch(types.load);
-  },
   data: () => ({
+    totalIndex: types.totalIndex,
     openPrintDialog: false
   }),
   computed: mapState({
+    products: state => state.Products.data,
     filter: state => state.Totals.filter,
     isLoading: state => state.Totals.loading,
-    showSpinner: state => state.Totals.showSpinner,
+    current: state => state.Totals.data,
+    cierreIndex: state => state.Totals.cierreIndex,
+    cierre(state) {
+      if (this.cierreIndex == this.totalIndex)
+        return this.getTotal(this.current.cierres);
+      if (this.current && this.current.cierres)
+        if (this.current.cierres.length >= this.cierreIndex)
+          return this.current.cierres[this.cierreIndex - 1].data;
+      return [];
+    },
     filteredData(state) {
-      return this.sortData(this.filterData([...state.Totals.data]));
+      return this.sortData(this.filterData([...this.cierre]));
     }
   }),
   methods: {
+    getTotal() {
+      let total = {};
+      for (let cierre of this.current.cierres) {
+        for (let item of cierre.data) {
+          total[item._id] = item;
+        }
+      }
+      return total;
+    },
     closePrintDialog() {
       this.openPrintDialog = false;
     },
@@ -103,6 +127,7 @@ $bFontSize: 17px;
 $bFontColor: #a0a0a0;
 
 .grid {
+  padding: 10px;
   grid-area: table;
   display: grid;
   grid-template-rows: 50px 9fr;

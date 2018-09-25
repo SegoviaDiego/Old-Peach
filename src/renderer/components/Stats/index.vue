@@ -5,9 +5,9 @@
         <router-link to="/informes" class="tab">
           Informes
         </router-link>
-        <router-link to="/sells" class="tab">
+        <!-- <router-link to="/sells" class="tab">
           Ventas
-        </router-link>
+        </router-link> -->
         <router-link to="/movimientos" class="tab">
           Movimientos
         </router-link>

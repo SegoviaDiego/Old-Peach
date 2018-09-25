@@ -1,42 +1,73 @@
 <template>
   <div class="grid">
-    <div class="info">
-      <div class="date">
-        20/09/2018
-      </div>
-      <div class="total">
-        Total vendido: $91238
-      </div>
-      <div class="comparison">
-        $2393 <span style="color: green;">más</span> que ayer.
-      </div>
-    </div>
-    <div class="buttons">
-      <div class="circle">
-        <div class="icon">
-          <fontawesome icon="search" />
+    <template v-if="cierreIndex">
+      asd
+      <div class="info">
+        <div class="date">
+          {{getDate()}}
         </div>
-        <div class="title">
-          Detalle
+        <div class="total">
+          <template v-if="cierreIndex && current">
+            <template v-if="cierreIndex == totalIndex">
+              Total: $ {{current.total}}
+            </template>
+            <template v-else>
+              Total en Cierre {{cierreIndex}}: $ {{current.cierres[cierreIndex - 1].total}}
+            </template>
+          </template>
         </div>
-      </div>
-      <div class="circle">
-        <div class="icon">
-          <fontawesome icon="search" />
-        </div>
-        <div class="title">
-          Grafico
+        <div class="comparison">
+          $2393 <span style="color: green;">más</span> que ayer.
         </div>
       </div>
-    </div>
+      <div class="buttons">
+        <div class="circle">
+          <div class="icon">
+            <fontawesome icon="search" />
+          </div>
+          <div class="title">
+            Detalle
+          </div>
+        </div>
+        <div class="circle">
+          <div class="icon">
+            <fontawesome icon="search" />
+          </div>
+          <div class="title">
+            Grafico
+          </div>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
 <script>
+import { mapState } from "Vuex";
+import { equalDates } from "../../../store/backendish/Src/Utils";
+import { totals as types } from "../../../store/vuexTypes";
+
 export default {
   name: "informes-sidebar",
-  components: {},
-  mounted() {}
+  data: () => ({
+    totalIndex: types.totalIndex
+  }),
+  computed: mapState({
+    date: state => state.Totals.date,
+    isLoading: state => state.Totals.loading,
+    current: state => state.Totals.data,
+    cierreIndex: state => state.Totals.cierreIndex
+  }),
+  methods: {
+    getDate() {
+      // if (equalDates(new Date(), this.current.date))
+      //   return "Hoy";
+      return `
+      ${this.current.date.getDate()}/
+      ${this.current.date.getMonth()}/
+      ${this.current.date.getFullYear()}`;
+    }
+  }
 };
 </script>
 

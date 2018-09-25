@@ -1,13 +1,10 @@
 <template>
   <div class="mainGrid">
-    <!-- <PrintDialog :showDialog="openPrintDialog" v-on:close-print-dialog="closePrintDialog"/> -->
     <HeaderBar
       v-on:go-to="goTo" v-on:print="print"
       :amount="amount" :selected="selected" :changes="changes"
       :newItem="newItem" :routes="routes" />
     <Table
-      v-on:input-stock="handleInputStock"
-      v-on:edit-item-value="handleEditItemValue"
       :products="filteredData"
       :amount="amount" :selected="selected" :changes="changes"
       :newItem="newItem" :routes="routes" />
@@ -17,23 +14,57 @@
 <script>
 import HeaderBar from "./HeaderBar.vue";
 import Table from "./Table.vue";
-import PrintDialog from "./PrintDialog.vue";
 import { mapState } from "Vuex";
 import { products as types } from "../../store/vuexTypes";
+
+const pdfMake = require("pdfmake/build/pdfmake.js");
+const pdfVfs = require("pdfmake/build/vfs_fonts.js");
 
 export default {
   name: "products-page",
   components: {
     HeaderBar,
-    Table,
-    PrintDialog
+    Table
+  },
+  mounted() {
+    this.$store.dispatch(types.load);
   },
   methods: {
     closePrintDialog() {
       this.openPrintDialog = false;
     },
     print() {
-      this.openPrintDialog = true;
+      let printData = [];
+      printData.push(["PLU", "NOMBRE", "EN STOCK"]);
+
+      for (let item of this.data) {
+        printData.push([item._id, item.name, item.stock]);
+      }
+
+      pdfMake.vfs = pdfVfs.pdfMake.vfs;
+      pdfMake.fonts = {
+        Roboto: {
+          normal: "Roboto-Regular.ttf",
+          bold: "Roboto-Medium.ttf",
+          italics: "Roboto-Italic.ttf",
+          bolditalics: "Roboto-Italic.ttf"
+        }
+      };
+      pdfMake
+        .createPdf({
+          content: [
+            {
+              table: {
+                headerRows: 1,
+                dontBreakRows: true,
+                keepWithHeaderRows: 1,
+                widths: ["10%", "50%", "40%"],
+                body: printData
+              }
+            }
+          ]
+        })
+        .download();
     },
     goTo(route, from) {
       this.$store.dispatch(types.buttons, route);
@@ -58,12 +89,6 @@ export default {
             this.amount = {};
             break;
         }
-    },
-    handleInputStock(_id, amount) {
-      this.amount[_id] = amount;
-    },
-    handleEditItemValue(_id, att, value) {
-      this.changes[_id][att] = value;
     },
     addKeyValues(obj) {
       let values = "";
@@ -90,9 +115,6 @@ export default {
       });
     }
   },
-  mounted() {
-    this.$store.dispatch(types.load);
-  },
   data: () => ({
     newItem: {
       _id: undefined,
@@ -112,8 +134,7 @@ export default {
       editItems: 5,
       inStock: 6,
       outStock: 7
-    },
-    openPrintDialog: false
+    }
   }),
   computed: mapState({
     data: state => state.Products.data,

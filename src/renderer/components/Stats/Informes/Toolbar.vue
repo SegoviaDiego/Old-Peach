@@ -1,42 +1,109 @@
 <template>
   <div class="grid">
     <div class="sections">
-      <template v-for="i in 3">
-        <div :key="'sec-' + i" class="section">
-          <div class="title">
-            Cierre {{i}}
-          </div>
-          <div class="line"/>
-        </div>
+      
+      <!-- Select -->
+      <template v-if="cierres > 0">
+        <el-select :value="cierreIndex" @change="setIndex($event)" placeholder="Seleccionar cierre">
+          <el-option label="Total" :value="totalIndex"/>
+          <template v-for="i of cierres">
+            <el-option
+              :key="'cierre-'+i"
+              :label="'Cierre ' + i"
+              :value="i">
+            </el-option>
+          </template>
+        </el-select>
       </template>
-      <div class="section active">
+
+      <!-- Buttons -->
+      <template v-if="cierres <= 3">
+        <template v-for="i of cierres">
+          <div
+            :key="'sec-' + i"
+            @click="setIndex(i)"
+            :class="{section: true, active: i == cierreIndex }">
+            <div class="title">
+              Cierre {{i}}
+            </div>
+            <div class="line"/>
+          </div>
+        </template>
+      </template>
+
+      <!-- Total -->
+      <div
+        @click="setIndex(totalIndex)"
+        :class="{section: true, active: cierreIndex == totalIndex }">
         <div class="title">
           Total
         </div>
         <div class="line"/>
       </div>
+
     </div>
     <div class="searchbar">
       <input placeholder="Buscar" type="text" />
     </div>
     <div class="btnTools">
-      <button @click="setDate()" class="rect">
+      <button @click="selectingDate = true" class="rect">
         Fecha
       </button>
       <button @click="print()" class="circle">
         <fontawesome icon="print" />
       </button>
     </div>
+
+    <!-- Dialog -->
+    <el-dialog
+      title="Seleccionar fecha"
+      :visible.sync="selectingDate"
+      width="30%">
+      <div>
+        <input v-model="selectedDate" type="date">
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="selectingDate = false">Cancelar</el-button>
+        <el-button type="primary" @click="setDate()">Aceptar</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
+import { mapState } from "Vuex";
+import { totals as types } from "../../../store/vuexTypes";
+
 export default {
   name: "informes-toolbar",
-  components: {},
-  mounted() {},
+  computed: mapState({
+    isLoading: state => state.Totals.loading,
+    cierreIndex: state => state.Totals.cierreIndex,
+    cierres(state) {
+      if (state.Totals.data) {
+        return state.Totals.data.cierres.length;
+      }
+      return 0;
+    }
+  }),
+  data: () => ({
+    totalIndex: types.totalIndex,
+    selectingDate: false,
+    selectedDate: null
+  }),
   methods: {
-    setDate() {},
+    setIndex(index) {
+      this.$store.dispatch(types.setCierreIndex, index);
+    },
+    setDate() {
+      let newDate = this.selectedDate.split("-");
+      newDate[1]--;
+      this.$store.dispatch(types.setDate, new Date(...newDate)).then(() => {
+        this.$store.dispatch(types.load);
+        this.selectingDate = false;
+      });
+    },
     print() {}
   }
 };

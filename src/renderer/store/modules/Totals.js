@@ -1,102 +1,32 @@
-import { load } from "../backendish/Src/TotalSell";
+import { load } from "../backendish/Src/Total";
 import { totals as types } from "../vuexTypes";
-import { isEmpty } from "lodash";
 
 export default {
   state: {
-    data: [],
+    data: undefined,
     loading: false,
-    showSpinner: false,
-    filter: ""
+    filter: null,
+    date: new Date(),
+    cierreIndex: null
   },
   actions: {
-    async [types.load]({ commit }) {
+    async [types.load]({ commit, state }) {
       commit(types.startLoading);
-      setTimeout(() => {
-        commit(types.showSpinner);
-      }, 200);
-      commit(types.load, await load());
+      commit(types.load, await load(state.date));
       commit(types.stopLoading);
-      commit(types.hideSpinner);
     },
-    async [types.syncToSystel]({ commit }) {
-      commit(types.startLoading);
-      setTimeout(() => {
-        commit(types.showSpinner);
-      }, 200);
-      await syncToSystel();
-      commit(types.load, await loadProducts());
-      commit(types.stopLoading);
-      commit(types.hideSpinner);
+    [types.setDate]({ commit }, newDate) {
+      commit(types.setDate, newDate);
     },
-    async [types.create]({ commit }, product) {
-      commit(types.startLoading);
-      setTimeout(() => {
-        commit(types.showSpinner);
-      }, 200);
-      await createProduct(product);
-      commit(types.load, await loadProducts());
-      commit(types.stopLoading);
-      commit(types.hideSpinner);
-    },
-    async [types.delete]({ commit }, selected) {
-      commit(types.startLoading);
-      setTimeout(() => {
-        commit(types.showSpinner);
-      }, 200);
-      await deleteItems(selected);
-      commit(types.load, await loadProducts());
-      commit(types.stopLoading);
-      commit(types.hideSpinner);
-    },
-    async [types.inStock]({ commit }, amount) {
-      commit(types.startLoading);
-      setTimeout(() => {
-        commit(types.showSpinner);
-      }, 200);
-      await inStock(amount);
-      commit(types.load, await loadProducts());
-      commit(types.stopLoading);
-      commit(types.hideSpinner);
-    },
-    async [types.outStock]({ commit }, payload) {
-      if (isEmpty(payload.amount)) {
-        console.log("OutStock - Amount was empty!");
-        return;
-      }
-      commit(types.startLoading);
-      setTimeout(() => {
-        commit(types.showSpinner);
-      }, 200);
-      await outStock(amount);
-      commit(types.load, await loadProducts());
-      commit(types.stopLoading);
-      commit(types.hideSpinner);
-    },
-    [types.startRealTime]({ commit }) {
-      startRealTimeProducts(async () => {
-        commit(types.startLoading);
-        setTimeout(() => {
-          commit(types.showSpinner);
-        }, 200);
-        commit(types.load, await loadProducts());
-        commit(types.stopLoading);
-        commit(types.hideSpinner);
-      });
-    },
-    [types.filter]({ commit }, value) {
-      commit(types.filter, value);
-    },
-    [types.stopRealTime]() {
-      stopRealTimeProducts();
-    },
-    [types.buttons]({ commit }, route) {
-      commit(types.buttons, route);
+    [types.setCierreIndex]({ commit }, index) {
+      commit(types.setCierreIndex, index);
     }
   },
   mutations: {
     [types.load](state, payload) {
       state.data = payload;
+      if (state.data.cierres.length > state.cierreIndex)
+        state.cierreIndex = null;
     },
     [types.startLoading](state) {
       state.loading = true;
@@ -104,19 +34,14 @@ export default {
     [types.stopLoading](state) {
       state.loading = false;
     },
-    [types.showSpinner](state) {
-      if (state.loading) {
-        state.showSpinner = true;
-      }
-    },
-    [types.hideSpinner](state) {
-      state.showSpinner = false;
-    },
-    [types.buttons](state, route) {
-      state.buttonRoute = route;
-    },
     [types.filter](state, value) {
       state.filter = value;
+    },
+    [types.setDate](state, value) {
+      state.date = value;
+    },
+    [types.setCierreIndex](state, value) {
+      state.cierreIndex = value;
     }
   }
 };

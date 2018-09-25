@@ -27,6 +27,10 @@ export const log = {
 
 export const totals = {
   load: "LOAD_TOTALS",
+  filter: "FILTER_CHANGE",
+  setDate: "SET_TOTALS_DATE",
+  setCierreIndex: 'SET_CIERRE_INDEX',
+  totalIndex: 'TOTAL_INDEX',
   // mutations
   startLoading: "START_LOADING",
   stopLoading: "STOP_LOADING",
