@@ -8,11 +8,12 @@
 ```bash
 # install MongoDB
 
+download mongodb 32 bits from 'https://www.mongodb.org/dl/win32/i386' and install it
+
 Open cmd as administrator and run
-download mongodb 32 bits from 'https://www.mongodb.org/dl/win32/i386'
-install it
-"\path\to\mongod.exe" --config "\path\to\mongod.cfg" --install
-run: net start MongoDB
+  "\path\to\mongod.exe" --config "\path\to\mongod.cfg" --install
+
+  net start MongoDB
 
 # install dependencies
 yarn / npm install
