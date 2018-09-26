@@ -5,7 +5,7 @@ export default {
   state: {
     data: undefined,
     loading: false,
-    filter: null,
+    filter: "",
     date: new Date(),
     cierreIndex: null
   },
@@ -20,6 +20,9 @@ export default {
     },
     [types.setCierreIndex]({ commit }, index) {
       commit(types.setCierreIndex, index);
+    },
+    [types.filter]({ commit }, value) {
+      commit(types.filter, value);
     }
   },
   mutations: {

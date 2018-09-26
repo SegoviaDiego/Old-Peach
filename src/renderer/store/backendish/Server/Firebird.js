@@ -21,17 +21,17 @@ export function listenForChanges() {
     if (err) throw err;
     if (doc) {
       console.log("Listening for Firebird changes");
-      identifyChange();
-      // setInterval(() => {
-      //   fs.writeFileSync(options.database, fs.readFileSync(doc.src));
-      //   identifyChange();
-      // }, 5000);
+      setInterval(() => {
+        fs.writeFileSync(options.database, fs.readFileSync(doc.src));
+        identifyChange();
+      }, 5000);
     }
   });
 }
 
 export function identifyChange() {
   const totals = [];
+
   fb.attach(options, (err, db) => {
     if (err) throw err;
 
@@ -42,7 +42,6 @@ export function identifyChange() {
         db.detach();
         if (err) throw err;
 
-        
         if (res.length > 0) {
           res.forEach(item => {
             totals.push({

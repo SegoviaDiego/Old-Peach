@@ -21,7 +21,7 @@
       <template v-else-if="cierre.length <= 0">
         No se realizaron ventas el dia seleccionado
       </template>
-      <template v-else v-for="total in cierre">
+      <template v-else v-for="total in filteredData">
         <div :key="total._id" class="row">
           <div class="column">
             {{products[total._id].name}}
@@ -53,12 +53,16 @@ export default {
     openPrintDialog: false
   }),
   computed: mapState({
-    products: state => state.Products.data,
+    products(state) {
+      return _.mapKeys(state.Products.data, function(value, key) {
+        return value._id;
+      });
+    },
     filter: state => state.Totals.filter,
     isLoading: state => state.Totals.loading,
     current: state => state.Totals.data,
     cierreIndex: state => state.Totals.cierreIndex,
-    cierre(state) {
+    cierre() {
       if (this.cierreIndex == this.totalIndex)
         return this.getTotal(this.current.cierres);
       if (this.current && this.current.cierres)
@@ -71,14 +75,22 @@ export default {
     }
   }),
   methods: {
-    getTotal() {
+    getTotal(cierres) {
       let total = {};
-      for (let cierre of this.current.cierres) {
-        for (let item of cierre.data) {
-          total[item._id] = item;
+      let item;
+
+      for (let cierre of cierres) {
+        for (let i of cierre.data) {
+          item = { ...i };
+
+          if (!total[item._id]) total[item._id] = item;
+          else {
+            total[item._id].money += item.money;
+            total[item._id].amount += item.amount;
+          }
         }
       }
-      return total;
+      return _.map(total);
     },
     closePrintDialog() {
       this.openPrintDialog = false;
@@ -89,6 +101,9 @@ export default {
     addKeyValues(obj) {
       let values = "";
       for (let val of Object.values(obj)) {
+        values += val;
+      }
+      for (let val of Object.values(this.products[obj._id])) {
         values += val;
       }
       return values.toLowerCase();

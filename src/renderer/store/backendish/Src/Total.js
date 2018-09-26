@@ -1,6 +1,7 @@
 import { Total as db, Totals as Totalsdb } from "../datastore";
 import { Total, Cierre } from "../models/Total";
 import { equalDates } from "./Utils";
+import { remove } from "./Product";
 import _ from "lodash";
 
 export function load(date) {
@@ -103,17 +104,34 @@ export function clearTotals() {
 
 export async function saveCierre() {
   return new Promise(async resolve => {
-    let current = await getCurrent();
-    if (current.cierres.length == 0) {
+    let currentCierre = await getCurrentCierre();
+
+    if (currentCierre.data.length > 0) {
+      let current = await getCurrent();
+      currentCierre._current = false;
+      currentCierre.date = new Date();
+
+      await removeCierreStock(currentCierre.data);
+
       current.cierres[
         _.findIndex(current.cierres, cierre => {
           return cierre._current;
         })
-      ]._current = false;
-      db.update({ _current: true }, { ...current }, () => {
-        resolve();
+      ] = currentCierre;
+
+      db.update({ _current: true }, { ...current }, async () => {
+        resolve(await createCurrentCierre());
       });
+    } else resolve();
+  });
+}
+
+export function removeCierreStock(data) {
+  return new Promise(async resolve => {
+    for (let item of data) {
+      await remove(item._id, item.amount);
     }
+    resolve();
   });
 }
 
@@ -173,13 +191,35 @@ export function updateCurrent(current) {
 export function updateCurrentCierre(newCierre) {
   return new Promise(async resolve => {
     let current = await getCurrent();
+    let total = 0;
+
+    for (let i in current.cierres) {
+      if (!current.cierres[i]._current) {
+        total += current.cierres[i].total;
+      }
+    }
+
+    newCierre.total = await getCierreTotal(newCierre);
+    total += newCierre.total;
+
     let currentCierre = _.findKey(current.cierres, cierre => {
       return cierre._current;
     });
 
     current.cierres[currentCierre] = newCierre;
+    current.total = total;
 
     resolve(await updateCurrent(current));
+  });
+}
+
+export function getCierreTotal(cierre) {
+  return new Promise(async resolve => {
+    let total = 0;
+    for (let item of cierre.data) {
+      total += parseFloat(item.money);
+    }
+    resolve(total);
   });
 }
 

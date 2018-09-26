@@ -79,6 +79,7 @@
     "element-ui": "^2.4.7",
     "lodash": "^4.17.11",
     "material-design-icons": "^3.0.1",
+    "mongodb": "^3.1.6",
     "nedb": "^1.8.0",
     "nedb-logger": "^0.1.0",
     "node-firebird": "^0.8.6",

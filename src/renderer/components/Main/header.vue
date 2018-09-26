@@ -59,6 +59,7 @@ export default {
   justify-content: center;
   align-items: center;
   .dot {
+    line-height: 64px;
     font-size: 64px;
     font-weight: bold;
     color: white;
@@ -67,7 +68,9 @@ export default {
 .title {
   grid-area: title;
   display: flex;
+  height: 100%;
   align-items: center;
+  margin: 0;
   .text {
     flex: 1;
     font-size: 42px;

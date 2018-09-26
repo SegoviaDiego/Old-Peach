@@ -1,7 +1,6 @@
 <template>
   <div class="grid">
     <template v-if="cierreIndex">
-      asd
       <div class="info">
         <div class="date">
           {{getDate()}}
@@ -11,13 +10,16 @@
             <template v-if="cierreIndex == totalIndex">
               Total: $ {{current.total}}
             </template>
+            <template v-else-if="cierreIndex == cierres">
+              Total en Turno Atual: $ {{current.cierres[cierreIndex - 1].total}}
+            </template>
             <template v-else>
               Total en Cierre {{cierreIndex}}: $ {{current.cierres[cierreIndex - 1].total}}
             </template>
           </template>
         </div>
         <div class="comparison">
-          $2393 <span style="color: green;">más</span> que ayer.
+          <!-- $2393 <span style="color: green;">más</span> que ayer. -->
         </div>
       </div>
       <div class="buttons">
@@ -56,16 +58,41 @@ export default {
     date: state => state.Totals.date,
     isLoading: state => state.Totals.loading,
     current: state => state.Totals.data,
-    cierreIndex: state => state.Totals.cierreIndex
+    cierreIndex: state => state.Totals.cierreIndex,
+    cierres(state) {
+      if (state.Totals.data) {
+        return state.Totals.data.cierres.length;
+      }
+      return 0;
+    }
   }),
   methods: {
     getDate() {
-      // if (equalDates(new Date(), this.current.date))
-      //   return "Hoy";
-      return `
-      ${this.current.date.getDate()}/
-      ${this.current.date.getMonth()}/
-      ${this.current.date.getFullYear()}`;
+      let date = "";
+      let time = "";
+
+      if (equalDates(new Date(), this.current.date)) {
+        date = "Hoy";
+      } else {
+        date = `
+          ${this.current.date.getDate()}/
+          ${this.current.date.getMonth()}/
+          ${this.current.date.getFullYear()}`;
+      }
+
+      if (this.cierreIndex == this.totalIndex) {
+        return date;
+      } else {
+        if (this.cierreIndex == this.cierres) {
+          time = `Turno actual`;
+          return time;
+        } else {
+          time = `
+          ${this.current.cierres[this.cierreIndex - 1].date.getHours()}:
+          ${this.current.cierres[this.cierreIndex - 1].date.getMinutes()}`;
+        }
+        return date + " a las " + time;
+      }
     }
   }
 };

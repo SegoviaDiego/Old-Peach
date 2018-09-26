@@ -3,13 +3,13 @@
     <div class="sections">
       
       <!-- Select -->
-      <template v-if="cierres > 0">
+      <template v-if="cierres > 3">
         <el-select :value="cierreIndex" @change="setIndex($event)" placeholder="Seleccionar cierre">
           <el-option label="Total" :value="totalIndex"/>
           <template v-for="i of cierres">
             <el-option
               :key="'cierre-'+i"
-              :label="'Cierre ' + i"
+              :label="getLabel(i)"
               :value="i">
             </el-option>
           </template>
@@ -24,7 +24,7 @@
             @click="setIndex(i)"
             :class="{section: true, active: i == cierreIndex }">
             <div class="title">
-              Cierre {{i}}
+              {{getLabel(i)}}
             </div>
             <div class="line"/>
           </div>
@@ -42,17 +42,24 @@
       </div>
 
     </div>
-    <div class="searchbar">
-      <input placeholder="Buscar" type="text" />
-    </div>
-    <div class="btnTools">
-      <button @click="selectingDate = true" class="rect">
-        Fecha
-      </button>
-      <button @click="print()" class="circle">
-        <fontawesome icon="print" />
-      </button>
-    </div>
+    
+    <template v-if="cierreIndex">
+      <div class="searchbar">
+        <input
+          :value="filter"
+          @input="filterChanged($event.target.value)"
+          placeholder="Buscar" type="text">
+      </div>
+      
+      <div class="btnTools">
+        <button @click="selectingDate = true" class="rect">
+          Fecha
+        </button>
+        <button @click="print()" class="circle">
+          <fontawesome icon="print" />
+        </button>
+      </div>
+    </template>
 
     <!-- Dialog -->
     <el-dialog
@@ -78,6 +85,7 @@ import { totals as types } from "../../../store/vuexTypes";
 export default {
   name: "informes-toolbar",
   computed: mapState({
+    filter: state => state.Totals.filter,
     isLoading: state => state.Totals.loading,
     cierreIndex: state => state.Totals.cierreIndex,
     cierres(state) {
@@ -93,6 +101,13 @@ export default {
     selectedDate: null
   }),
   methods: {
+    getLabel(i) {
+      if (this.cierres == i) return "Turno actual";
+      return "Cierre " + i;
+    },
+    filterChanged(value) {
+      this.$store.dispatch(types.filter, value);
+    },
     setIndex(index) {
       this.$store.dispatch(types.setCierreIndex, index);
     },
